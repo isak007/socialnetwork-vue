@@ -21,8 +21,8 @@ export const user = {
         }
       );
     },
-    fetchPicture({ commit }, pictureName) {
-        return UserService.fetchPicture(pictureName).then(
+    fetchProfilePicture({ commit }, userId) {
+        return UserService.fetchProfilePicture(userId).then(
           picture => {
             commit('fetchSuccess', picture);
             return Promise.resolve(picture);
@@ -33,6 +33,18 @@ export const user = {
           }
         );
       },
+    fetchPostPicture({ commit }, postId) {
+        return UserService.fetchPostPicture(postId).then(
+          picture => {
+            commit('fetchSuccess', picture);
+            return Promise.resolve(picture);
+          },
+          error => {
+            commit('fetchError');
+            return Promise.reject(error);
+          }
+      );
+    },
     editPersonalData({ commit }, userData) {
       return UserService.editPersonalData(userData).then(
         response => {
@@ -56,6 +68,18 @@ export const user = {
             return Promise.reject(error);
           }
         );
-      }
+    },
+    fetchFriendsList({ commit }, userId) {
+        return UserService.fetchFriendsList(userId).then(
+          response => {
+            commit('fetchSuccessfull');
+            return Promise.resolve(response.data);
+          },
+          error => {
+            commit('fetchFailure');
+            return Promise.reject(error);
+          }
+        );
+    }
   },
 };

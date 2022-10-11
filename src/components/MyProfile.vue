@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <header class="jumbotron">
+    <div id="header">
       <div style="float:left;margin-bottom:10px">
         <div style="margin-left: 20px;margin-right:102px;margin-top:10px;margin-bottom:10px;align-content:center;text-align:center">
             <div v-if="!this.displayPictureObject">
@@ -11,7 +11,7 @@
                     class="profile-img-card"/>
             </div>
             <div v-else>
-                <img id="profile-img" style="width:300px;height:300px;border-radius:50%;margin-bottom:15px" :src="this.displayPictureObject">
+                <img id="profile-img" style="width:300px;height:300px;border-radius:50%;margin-bottom:15px;box-shadow: 0 0 10px;" class="profile-img-card" :src="this.displayPictureObject">
             </div>
             
             <my-upload field="img"
@@ -19,6 +19,7 @@
                     @crop-success="cropSuccess"
                     @srcFileSet="this.onPictureChange"
                     v-model="show"
+                    noSquare=true
                     :width="300"
                     :height="300"
                     langType='en'
@@ -26,11 +27,25 @@
             </my-upload>
             <div v-if="editable&&this.displayPictureObject"><Button style="color:black" @click="this.removeImage" class="btn btn-link btn-sm">Remove</Button></div>
             <button style="border: 1px solid gray; border-radius:2px" @click="toggleShow" v-if="editable">Change profile picture</button>
-
+          
             <div style="margin-top:15px"> 
                 <h3>
                     <i><strong>{{this.user.firstName}}&nbsp;{{this.user.lastName}}</strong></i>'s Profile
                 </h3>
+            </div>
+
+            <div style="color:grey"> 
+                <h5>@{{this.user.username}}</h5>
+            </div>
+
+            <div v-if="this.editable" class="form-group">
+                <label style="color:grey;float:left" for="description">Description</label>
+                <Field name="description" type="description" v-slot="{ field }" :value="this.user.profileDescription">
+                    <textarea style="resize:none;scroll:none;height:110px" maxlength="100" @keyup="this.descriptionHandler(field.value)" v-bind="field" class="form-control" autocomplete="off"/>
+                </Field>
+            </div>
+            <div v-if="!this.editable && this.user.profileDescription" class="form-group">
+                <div style="word-break: break-word">{{this.user.profileDescription}}</div>
             </div>
         </div>
       </div>
@@ -241,11 +256,13 @@
                 </button>
                 <Button class="btn btn-outline-secondary" @click.prevent="this.changeEditable">Cancel</Button>
             </div>
-
         </Form>
-        
       </div>
-    </header>
+    </div>
+
+    <FriendsList style="width:100%;float:left;margin-top:20px" :userId='this.$store.state.auth.user.userId'></FriendsList>
+    <PostsList :userId='this.$store.state.auth.user.userId'></PostsList>
+
   </div>
 </template>
 
@@ -254,6 +271,8 @@ import { Form, Field, ErrorMessage } from "vee-validate";
 import * as yup from "yup";
 import 'babel-polyfill'; // es6 shim
 import myUpload from 'vue-image-crop-upload';
+import FriendsList from './FriendsList.vue';
+import PostsList from './PostsList.vue';
     export default {
         name: 'MyProfile',
         components: {
@@ -261,6 +280,8 @@ import myUpload from 'vue-image-crop-upload';
             Form,
             Field,
             ErrorMessage,
+            FriendsList,
+            PostsList
         },
         data(){
             var maxDate = new Date();
@@ -301,7 +322,9 @@ import myUpload from 'vue-image-crop-upload';
                 .required("Date of birth is required."),
               city: yup
                 .string()
-                .required("City is required.")
+                .required("City is required."),
+              description: yup
+                .string()
             });
 
             var minDate = new Date();
@@ -333,6 +356,7 @@ import myUpload from 'vue-image-crop-upload';
                 displayPictureObject: "",
                 newPictureName: "",
                 newPictureObject: "",
+                newDescription: "",
                 show: false,
                 cityList: [],
                 selectedCity: "",
@@ -355,6 +379,10 @@ import myUpload from 'vue-image-crop-upload';
         },
 
         methods: {
+            descriptionHandler(input){
+                this.newDescription = input;
+            },
+
             updateCity(event){
                 this.selectedCity = event;
             },
@@ -378,7 +406,6 @@ import myUpload from 'vue-image-crop-upload';
                 );
 
             },
-
             emailCodeHandler(e){
                 this.emailCode = e.target.value;
                 if (this.emailCode == ""){
@@ -490,7 +517,7 @@ import myUpload from 'vue-image-crop-upload';
             },
 
           fetchProfilePicture() {
-            this.$store.dispatch("user/fetchPicture", this.user.profilePicture).then(
+            this.$store.dispatch("user/fetchProfilePicture", this.user.id).then(
                 (data) => {
                     console.log(data.data);
                     const imageBlob = new Blob([data.data])
@@ -514,6 +541,7 @@ import myUpload from 'vue-image-crop-upload';
           },
 
           changeEditable(){
+            this.newDescription = this.user.profileDescription;
             this.emailCode = "";
             this.emailCodeErr = "";
             this.newEmail = "";
@@ -540,6 +568,7 @@ import myUpload from 'vue-image-crop-upload';
             && this.user.email == userData.email
             && this.user.dateOfBirth == userData.dateOfBirth
             && this.user.city == userData.city
+            && this.user.profileDescription == this.newDescription
             && this.newPictureName == "" && this.newPictureObject == null 
             && (userData.newPassword == null || (userData.newPassword != null && userData.password == userData.newPassword))
             ){
@@ -561,6 +590,8 @@ import myUpload from 'vue-image-crop-upload';
                 userData.emailVerificationCode = this.emailCode;
             }
             userData.city = this.selectedCity;
+            userData.profileDescription = this.newDescription;
+            console.log(this.newDescription);
 
             this.message = "";
             this.successful = false;
@@ -568,7 +599,6 @@ import myUpload from 'vue-image-crop-upload';
 
             // send photo if user has updated the photo
             if (this.newPictureObject != null && this.newPictureObject != ""){
-                console.log(this.newPictureObject);
                 this.currentPictureObject = this.displayPictureObject;
                 userData.profilePicture = this.newPictureName;
                 userData.pictureBase64 = this.newPictureObject;
@@ -656,18 +686,25 @@ import myUpload from 'vue-image-crop-upload';
     color:red;
   }
 
-  header{
+  #header{
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
     padding-top:30px;
     padding-left:50px;
     padding-right:50px;
+    padding-bottom:30px;
     float:left;
     width:100%;
     background-color: rgb(255, 255, 255);
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
   }
 
   .container{
     align-content: center;
     padding:10px;
+    padding-top:0px;
     background-color:#e9ecef;
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;

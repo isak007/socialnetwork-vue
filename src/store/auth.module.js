@@ -1,7 +1,16 @@
 import AuthService from '../services/auth.service';
+import jwt_decode from "jwt-decode";
 
-const user = JSON.parse(localStorage.getItem('user'));
-const initialState = user
+var user = JSON.parse(localStorage.getItem('user'));
+const token = user && user["jwt"];
+if (token == null || jwt_decode(token).exp < Date.now() / 1000) {
+    // if token has expired set user to null and remove him from storage
+    user = null
+    localStorage.removeItem('user');
+}
+
+// confirm that user AND token are not null, otherwise not authorized
+const initialState = user && token
   ? { status: { loggedIn: true }, user }
   : { status: { loggedIn: false }, user: null };
 

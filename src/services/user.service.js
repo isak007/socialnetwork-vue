@@ -11,9 +11,25 @@ class UserService{
         return axios.get(USERS_API_BASE_URL+'/fetch/'+userId, 
             { headers: authHeader()});
     }
-    fetchPicture(pictureName){
-        return axios.get(USERS_API_BASE_URL+'/picture/'+pictureName, 
-            { responseType: "blob", headers: authHeader()});
+    fetchProfilePicture(userId){
+        return axios.get(USERS_API_BASE_URL+'/profile-picture', 
+            {
+                 responseType: "blob", 
+                 headers: authHeader(),
+                 params: {
+                    userId: userId,
+                 }
+            });
+    }
+    fetchPostPicture(postId){
+        return axios.get(USERS_API_BASE_URL+'/post-picture', 
+            {
+                 responseType: "blob", 
+                 headers: authHeader(),
+                 params: {
+                    postId: postId,
+                 }
+            });
     }
     editPersonalData(userData){
         return axios.put(USERS_API_BASE_URL, userData,

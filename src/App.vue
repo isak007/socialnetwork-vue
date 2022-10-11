@@ -73,6 +73,15 @@ export default {
   .nav-item {
     cursor: pointer;
   }
+
+  #app {
+    background-color: #e9ecef;
+  }
+
+  html,body {
+    background-color: #e9ecef;
+  }
+
 /* #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
