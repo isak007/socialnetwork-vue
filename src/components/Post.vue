@@ -59,33 +59,93 @@
                 src="//ssl.gstatic.com/accounts/ui/avatar_2x.png"
                 class="profile-img-card"/>
             <img v-else
-                style="width:50px;height:50px;border-radius:50%"
+                style="width:fit-content"
                 :src="this.displayPostPictureObject"/>
         </div>
 
 
-        <div style="margin-bottom:5px;margin-left:5px">
-            <a v-if="this.likes.length == 1" style="color:grey;text-decoration:none">
-                {{this.likes.length}} like
-            </a>
-            <a v-else-if="this.likes.length > 1" style="color:grey;text-decoration:none">
-                {{this.likes.length}} likes
-            </a>
-            <div style="margin-top:3px;margin-right:5px;float:right;color:grey">
-                <span v-if="this.post.edited">Edited &bull;</span>
-                Posted: {{this.post.datePosted}}
+        
+
+        <div style="margin-bottom:15px;margin-left:5px;float:left;width:100%">
+            <VTooltip theme="tooltip" style="margin-right:5px;float:right;color:grey">
+                <div style="margin-top:3px;margin-right:5px;float:right;color:grey">
+                    <a>
+                        <span v-if="this.post.edited">Edited &bull;</span>
+                        Posted {{this.displayDate != "fullDate" ? this.displayDate : this.post.datePosted}}
+                    </a>
+                </div>
+                <template #popper>
+                    {{this.dateFormatted}}
+                </template>
+            </VTooltip>
+            <div v-if="this.postLikes.length>0">
+                <div style="float:left">
+                    <Button v-if="this.liked" @click="this.deleteLike" class="btn btn-outline-danger btn-sm" :disabled="this.editing || this.deleting || this.likingDisliking">Dislike</Button>
+                    <Button v-else @click="this.createLike" class="btn btn-danger btn-sm" :disabled="this.editing || this.deleting || this.likingDisliking">Like</Button>
+                </div>
+                <div style="float:left">
+                    <VMenu :triggers="['click']" :hideTriggers="['click']">
+                        <button @click="this.likesClicked" v-if="this.totalLikes == 1" style="color:grey;text-decoration:none" class="btn btn-link btn-sm">
+                            {{this.totalLikes}} like
+                        </button>
+                        <button @click="this.likesClicked" v-else-if="this.totalLikes > 1" style="color:grey;text-decoration:none" class="btn btn-link btn-sm">
+                            {{this.totalLikes}} likes
+                        </button>
+
+                        <template #popper>
+                            <perfect-scrollbar id="friendsList" @mouseenter="this.disableScrollable"  @mouseleave="this.enableScrollable"
+                            @ps-y-reach-end="this.scrollEndHandle" @ps-scroll-up="this.scrollUpHandle">
+                                <div style="padding:10px;padding-right:20px;padding-top:5px;padding-bottom:5px;max-height:247px">
+                                    <div v-for="(user) in this.postLikes" :key="user">
+                                        <router-link v-if='this.$store.state.auth.user.userId != user.id' :to="'/profile/'+user.username" style="color:#17a2b8;text-decoration:none">
+                                            <span style="color:grey">[{{user.username}}]</span> {{user.firstName}} {{user.lastName}}
+                                        </router-link>
+                                        <router-link v-else :to="'/my-profile'" style="color:#17a2b8;text-decoration:none">
+                                            <span style="color:grey">[me]</span> {{user.firstName}} {{user.lastName}}
+                                        </router-link>
+                                    </div>                              
+                                </div>
+                            </perfect-scrollbar>
+
+                            <div v-if="this.postLikes.length > 10 && !this.scrolledBottom && !this.loadingLikes" style="text-align:center">
+                                <!-- <div style="font-size:10px">Scroll down</div> -->
+                                <img style="width:10px;height:10px" src="../assets/icon-arrow-down.png">
+                            </div>
+                            <div v-if="this.postLikes.length > 10 && this.scrolledBottom && !this.loadingLikes" style="text-align:center">
+                                <!-- <div style="font-size:12px">&nbsp;</div> -->
+                                &nbsp;
+                            </div>
+
+                            <div v-if="this.loadingLikes" style="text-align:center">
+                                <Button style="color:#17a2b8;text-decoration:none" class="btn btn-link btn-sm" :disabled="this.loadingLikes">
+                                    <span
+                                        v-show="this.loadingLikes"
+                                        class="spinner-border spinner-border-sm"
+                                    ></span>
+                                </Button>
+                            </div>
+                        </template>
+                    </VMenu>
+                </div>
+                
+            </div>
+            <div v-else>
+                <Button v-if="this.liked" @click="this.deleteLike" class="btn btn-outline-danger btn-sm" :disabled="this.editing || this.deleting || this.likingDisliking">Dislike</Button>
+                <Button v-else @click="this.createLike" class="btn btn-danger btn-sm" :disabled="this.editing || this.deleting || this.likingDisliking">Like</Button>
             </div>
         </div>
-
-        <div>
-            <Button v-if="this.liked" @click="this.deleteLike" class="btn btn-outline-danger btn-sm" :disabled="this.editing || this.deleting || this.likingDisliking">Dislike</Button>
-            <Button v-else @click="this.createLike" class="btn btn-danger btn-sm" :disabled="this.editing || this.deleting || this.likingDisliking">Like</Button>
-        </div>
-        
 
         <div v-if="this.editable" style="color:grey;margin-top:10px">
             <label>Description</label>
             <textarea v-model="this.newDescription" @input="(event) => this.handleNewDescription(event)" style="padding:10px;width:100%;border:1px solid grey;border-radius:5px;outline:none"></textarea>
+        </div>
+        <div v-if="this.editable" style="margin-bottom:15px">
+            <div style="color:grey;margin-bottom:5px">Who can see the post</div>
+            <select name="visibility" id="" v-on:change="onChangeVisibility($event)" v-model="newVisibility">
+                <option value="PUBLIC">Everyone</option>
+                <option value="FRIENDS">Friends</option>
+                <option value="ME">Only me</option>
+            </select>
         </div>
         <div v-if="!this.editable && this.post.text" style="margin-top:10px">
             <div style="padding:10px;width:100%;border:1px solid grey;border-radius:5px;outline:none;border:none;resize:none;cursor:default">
@@ -102,48 +162,193 @@
         
         <CommentsList :postId="this.post.id"></CommentsList>
 
+
         
     </div>
 </template>
 
-<script>   
+<script>
 import CommentsList from './CommentsList.vue';
+import { PerfectScrollbar } from 'vue3-perfect-scrollbar'
     export default {
       name: "Post",
       components: {
-        CommentsList
+        CommentsList,
+        PerfectScrollbar
       },
       props: {
         postWithData: Object
       },
       data() {
+        const months = {
+            1: "Jan",
+            2: "Feb",
+            3: "March",
+            4: "April",
+            5: "May",
+            6: "June",
+            7: "July",
+            8: "Aug",
+            9: "Sep",
+            10: "Oct",
+            11: "Nov",
+            12: "Dec"
+        }
+        var date = new Date(this.postWithData.postDTO.datePosted);
+        var dateFormatted = date.getDate() + " " + months[date.getMonth()] + " " + date.getFullYear() + " - " + 
+            (date.getHours().toString().length > 1 ? date.getHours().toString() : "0" + date.getHours().toString()) + ":" +
+            (date.getMinutes().toString().length > 1 ? date.getMinutes().toString() : "0" + date.getMinutes().toString()) + "h"
         return {
           content: "",
           displayProfilePictureObject: "",
           displayPostPictureObject: "",
           user: Object,
           post: this.postWithData.postDTO,
+          postLikes: this.postWithData.postLikesDTO,
           newDescription: this.postWithData.postDTO.text,
+          newVisibility: this.postWithData.postDTO.visibility,
           editing: false,
           deleting: false,
           likingDisliking: false,
           loading: false,
+          loadingLikes: false,
           liked: this.postWithData.liked,
-          likes: this.postWithData.postLikesDTO,
+          totalLikes: this.postWithData.totalLikes,
           message: "",
           editable: false,
           canUpdate: false,
           comments: this.postWithData.commentsDTO,
-          deleted:false
+          deleted:false,
+          displayDate: '',
+          dateFormatted: dateFormatted,
+          postLikesPage: 1, // because first page is loaded with post
+          scrolledBottom: false,
+          lastPageLikes: this.postWithData.totalLikes <= 15 ? true : false // bcs there are 15 likes per page
         };
       },
-      mounted(){
+      created(){
+        this.displayDate = this.calculateTime();
+        this.setRefreshable();
         this.fetchPostOwner();
         if (this.post.picture != null && this.post.picture != ""){
             this.fetchPostPicture();
         }
+        // test
+        // this.lastPageLikes = false;
+        // for (let i=0; i<20;i++){
+        //     this.postLikes.push(this.postLikes[0]);
+        // }
       },
       methods: {
+        likesClicked(){
+            this.scrolledBottom = false;
+        },
+        scrollUpHandle(e){
+            this.scrolledBottom = false;
+        },
+        scrollEndHandle(e){
+            this.scrolledBottom = true;
+            // if there was actually scrolling (enough elements for scrolling)
+            if (this.postLikes.length > 10){
+                // if friends list is already fetching
+                if (!this.loadingLikes && !this.lastPageLikes){
+                    this.fetchPostLikes("page");
+                }
+            }
+        },
+        disableScrollable(){
+            // dont disable if there is not enough friends in list for scrolling
+            if (this.postLikes.length <= 10){
+                return;
+            }
+            // Get the current page scroll position
+            var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            var scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+        
+            // if any scroll is attempted, set this to the previous value
+            window.onscroll = function() {
+                window.scrollTo(scrollLeft, scrollTop);
+            };
+        },
+        enableScrollable(){
+            window.onscroll = function() {};
+        },
+        setRefreshable(){
+            window.setInterval( () => {
+                this.refreshPostTimeAndLikes()
+            }, 60000);
+        },
+        refreshPostTimeAndLikes(){
+            this.displayDate = this.calculateTime();
+            this.fetchPostLikes("refresh"); // this will only update the total number of likes
+        },
+        calculateTime(){
+            var startTime = new Date(this.post.datePosted); 
+            var endTime = new Date();
+            var difference = endTime.getTime() - startTime.getTime(); // This will give difference in milliseconds
+            var displayDate = "";
+            var diffInMinutes = Math.floor(difference / 60000);
+            var diffInHours = Math.floor(diffInMinutes / 60);
+            var diffInDays = Math.floor(diffInHours / 24);
+            var diffInWeeks = Math.floor(diffInDays / 7);
+            var diffInMonths = Math.floor(diffInDays / 30);
+            var diffInYears = Math.floor(diffInMonths / 12);
+            if (diffInYears > 0){
+                if (diffInYears > 1){
+                    displayDate = diffInYears+" years ago";
+                }else{
+                    displayDate = "about a year ago";
+                }
+            } else{
+                if (diffInMonths > 0){
+                    if (diffInMonths > 1){
+                    displayDate = "about " + diffInMonths+" months ago";
+                    }else{
+                        displayDate = "about a month ago";
+                    }
+                } else{
+                    if (diffInWeeks > 0){
+                        if (diffInWeeks > 1){
+                            displayDate = diffInWeeks+" weeks ago";
+                        }else{
+                            displayDate = diffInWeeks+" week ago";
+                        }
+                    }
+                    else{
+                        if (diffInDays > 0){
+                            if (diffInDays > 1){
+                                displayDate = diffInDays+" days ago";
+                            }else{
+                                displayDate = diffInDays+" day ago";
+                            }
+                        } else{
+                            if (diffInHours > 0){
+                                if(diffInHours > 1){
+                                    displayDate = diffInHours+" hours ago";
+                                } else{
+                                    displayDate = diffInHours+" hour ago";
+                                }
+                            } else{
+                                if(diffInMinutes > 1){
+                                    displayDate = diffInMinutes+" minutes ago";
+                                } else if(diffInMinutes == 1){
+                                    displayDate = diffInMinutes+" minute ago";
+                                } else{
+                                    displayDate = "just now";
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return displayDate;
+        },
+        onChangeVisibility: function(e){
+            this.newVisibility = e.target.value;//e.target.options[e.target.options.selectedIndex].text;
+            if (this.newVisibility == this.postWithData.postDTO.visibility && this.newDescription == this.postWithData.postDTO.text){
+                this.canUpdate = false;
+            } else{ this.canUpdate = true; }
+        },
         handleNewDescription(e){
             if (this.post.text != this.newDescription){
                 this.canUpdate = true;
@@ -155,10 +360,12 @@ import CommentsList from './CommentsList.vue';
             this.editing = true;
             this.loading = true;
             const editedPost = this.post;
-            editedPost.text = this.newDescription
+            editedPost.text = this.newDescription;
+            editedPost.visibility = this.newVisibility;
             this.$store.dispatch("post/editPost", editedPost).then(
                 (data) => {
                     this.post.text = this.newDescription;
+                    this.post.visibility = this.newVisibility;
                     this.post.edited = true;
                     this.canUpdate = false;
                     this.editable = false;
@@ -181,6 +388,7 @@ import CommentsList from './CommentsList.vue';
             this.$store.dispatch("post/deletePost", this.post.id).then(
                 (data) => {
                     this.deleted= true;
+                    this.$emit('post-delete', this.post.id);
                 },
                 (error) => {
                     this.message =
@@ -204,8 +412,9 @@ import CommentsList from './CommentsList.vue';
             }
             this.$store.dispatch("postLike/createLike", likeData).then(
                 (data) => {
+                    this.totalLikes += 1;
                     this.liked = true;
-                    this.likes.push(data);
+                    this.postLikes.push(data);
                     this.likingDisliking = false;
                 },
                 (error) => {
@@ -226,13 +435,14 @@ import CommentsList from './CommentsList.vue';
             }
             this.$store.dispatch("postLike/deleteLike", likeData).then(
                 (data) => {
-                    for (let likeIndex in this.likes){
-                        var like = this.likes[likeIndex];
-                        if (like.userId == likeData.userId){
-                            this.likes.splice(likeIndex,1);
+                    for (let likeIndex in this.postLikes){
+                        var user = this.postLikes[likeIndex];
+                        if (user.id == likeData.userId){
+                            this.postLikes.splice(likeIndex,1);
                             break;
                         }
                     }
+                    this.totalLikes -= 1;
                     this.liked = false; 
                     this.likingDisliking = false;
                 },
@@ -255,24 +465,49 @@ import CommentsList from './CommentsList.vue';
             this.canUpdate = false;
         },
         fetchPostOwner(){
-              this.$store.dispatch("user/getUserData", this.post.userId).then(
-                (data) => {
-                    this.user = data.data;
-                    if (this.user.profilePicture != null && this.user.profilePicture != ""){
-                        this.fetchProfilePicture();
-                    }
-                    this.message = data.message;
-                },
-                (error) => {
-                    this.message =
-                        (error.response &&
-                        error.response.data &&
-                        error.response.data.message) ||
-                        error.message ||
-                        error.toString();
+            this.$store.dispatch("user/getUserData", this.post.userId).then(
+            (data) => {
+                this.user = data.data;
+                if (this.user.profilePicture != null && this.user.profilePicture != ""){
+                    this.fetchProfilePicture();
                 }
-              );
+                this.message = data.message;
+            },
+            (error) => {
+                this.message =
+                    (error.response &&
+                    error.response.data &&
+                    error.response.data.message) ||
+                    error.message ||
+                    error.toString();
+            }
+            );
           },
+        fetchPostLikes(type){
+            if(type!="refresh") this.loadingLikes = true;
+            const data = {
+                postId: this.post.id,
+                page: type=="refresh" ? 0 : this.postLikesPage
+            }
+            this.$store.dispatch("postLike/fetchPostLikes", data).then(
+            (data) => {
+                if (type!="refresh"){
+                    this.postLikes.push.apply(this.postLikes,data.users);
+                    this.loadingLikes = false;
+                }
+                this.totalLikes = data.totalLikes;
+            },
+            (error) => {
+                this.loadingLikes = false;
+                this.message =
+                    (error.response &&
+                    error.response.data &&
+                    error.response.data.message) ||
+                    error.message ||
+                    error.toString();
+            }
+            );
+        },
         fetchProfilePicture(){
             this.$store.dispatch("user/fetchProfilePicture",this.post.userId).then(
                 (data) => {
@@ -318,7 +553,7 @@ import CommentsList from './CommentsList.vue';
     }
 
     #post{
-        margin-top:20px;
+        margin-bottom:40px;
         padding-top:30px;
         padding-left:50px;
         padding-right:50px;

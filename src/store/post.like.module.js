@@ -9,6 +9,18 @@ export const postLike = {
   namespaced: true,
   state: initialState,
   actions: {
+    fetchPostLikes({ commit }, data) {
+        return LikeService.fetchPostLikes(data).then(
+          response => {
+            commit('fetchSuccessfull');
+            return Promise.resolve(response.data);
+          },
+          error => {
+            commit('fetchFailure');
+            return Promise.reject(error);
+          }
+        );
+    },
     createLike({ commit }, likeData) {
         return LikeService.createLike(likeData).then(
           response => {

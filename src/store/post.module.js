@@ -9,14 +9,26 @@ export const post = {
   namespaced: true,
   state: initialState,
   actions: {
-    fetchPostsList({ commit }, userId) {
-        return PostService.fetchPostsList(userId).then(
+    fetchPostsList({ commit }, postsData) {
+        return PostService.fetchPostsList(postsData).then(
           response => {
             commit('fetchSuccessfull');
             return Promise.resolve(response.data);
           },
           error => {
             commit('fetchFailure');
+            return Promise.reject(error);
+          }
+        );
+    },
+    createPost({ commit }, post) {
+        return PostService.createPost(post).then(
+          response => {
+            commit('postSuccessful');
+            return Promise.resolve(response.data);
+          },
+          error => {
+            commit('postFailure');
             return Promise.reject(error);
           }
         );

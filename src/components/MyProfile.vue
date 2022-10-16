@@ -14,7 +14,7 @@
                 <img id="profile-img" style="width:300px;height:300px;border-radius:50%;margin-bottom:15px;box-shadow: 0 0 10px;" class="profile-img-card" :src="this.displayPictureObject">
             </div>
             
-            <my-upload field="img"
+            <my-upload
                     v-if="editable"
                     @crop-success="cropSuccess"
                     @srcFileSet="this.onPictureChange"
@@ -603,7 +603,7 @@ import PostsList from './PostsList.vue';
                 userData.profilePicture = this.newPictureName;
                 userData.pictureBase64 = this.newPictureObject;
             }
-            // or remove the photo
+            // or removed the photo
             else if (this.displayPictureObject == "" && this.currentPictureObject != ""){
                 this.currentPictureObject = this.displayPictureObject;
                 userData.profilePicture = "remove";
@@ -713,6 +713,13 @@ import PostsList from './PostsList.vue';
 
   .button{
     height: 38px;
+  }
+
+  /* ovamo nista ne mijenja al kao podsjetnik */
+  /* da sam dodao ovo u node_modules/vue-image-crop-upload/upload.css fajl */
+  /* da se slika ne bi rastezala kad se zoomira */
+  .vicp-img{
+    max-width:unset!important;
   }
 
 </style>

@@ -4,8 +4,17 @@ import authHeader from './auth-header';
 const USERS_API_BASE_URL = 'http://localhost:5000/social-network/posts';
 
 class PostService{
-    fetchPostsList(userId){
-        return axios.get(USERS_API_BASE_URL+"/user/"+userId,{
+    fetchPostsList(postsData){
+        return axios.get(USERS_API_BASE_URL+"/user/"+postsData.userId,{
+            headers: authHeader(),
+            params: {
+                page:postsData.page
+            }
+        })
+    }
+    createPost(post){
+        return axios.post(USERS_API_BASE_URL, post,
+        {
             headers: authHeader(),
         })
     }

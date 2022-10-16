@@ -1,8 +1,9 @@
 <template>
-  <div> 
+  <div style="margin-bottom:10px"> 
     <div style="float:left;width:100%">
         <div style="float:left;margin-right:10px;margin-left:10px">
-            <h3>Friends ({{!this.loading ? friendsList.length : "?"}})</h3>
+            <h3 v-if="this.loading">Friends</h3>
+            <h3 v-else>Friends ({{friendsList.length}})</h3>
         </div>
         <div v-if="!this.loading" style="float:left;margin-bottom:10px">
             <Button v-if="showFriends" @click="this.toggleShow" class="btn btn-info">Hide friends</Button>
@@ -10,7 +11,7 @@
         </div>
     </div>
 
-    <div v-if="showFriends">
+    <div v-show="showFriends" id="friendsListBg">
         <div style="width:fit-content"
             v-if="error"
             class="alert"
@@ -18,11 +19,31 @@
             >
             {{ error }}
         </div>
-        <perfect-scrollbar id="friendsList" @mouseover="this.disableScrollable" @mouseleave="this.enableScrollable">
+        <perfect-scrollbar id="friendsList" @mouseenter="this.disableScrollable"  @mouseleave="this.enableScrollable"
+            @ps-y-reach-end="this.scrollEndHandle" @ps-scroll-up="this.scrollUpHandle">
             <div style="float:left" v-for="(friend) in this.friendsList" :key="friend.id">
                 <UserProfileSticker :user='friend'/>
             </div>
         </perfect-scrollbar>
+
+        <div v-if="!lastPage" style="text-align:center">
+            <Button style="color:#17a2b8;text-decoration:none" class="btn btn-link btn-sm" :disabled="this.loading">
+                <span
+                    v-show="this.loading && this.showFriends"
+                    class="spinner-border spinner-border-sm"
+                ></span>
+                &nbsp;
+            </Button>
+        </div>
+
+        <div v-if="this.friendsList.length > 14 && !this.scrolledBottom" style="text-align:center">
+            <div style="font-size:12px">Scroll down</div>
+            <img  src="../assets/icon-arrow-down.png">
+        </div>
+        <div v-if="this.friendsList.length > 14 && this.scrolledBottom" style="text-align:center">
+            <div style="font-size:12px">&nbsp;</div>
+            &nbsp;
+        </div>
     </div>
   </div>
 </template>
@@ -45,23 +66,34 @@ export default {
       showFriends: false,
       friendsList: [],
       error: "",
-      loading: true
+      loading: true,
+      scrolledBottom: false,
+      page:0,
+      lastPage:false,
     };
   },
   created(){
-    this.$store.dispatch("friendRequest/fetchFriendsList", this.userId).then(
-        (data) => {
-            this.friendsList = data;
-            this.loading = false;
-        },
-        (error) => {
-            this.error = error;
-            console.log(error);
-        }
-    );
+    this.loadFriends();
   },
   methods: {
+    scrollUpHandle(e){
+        this.scrolledBottom = false;
+    },
+    scrollEndHandle(e){
+        this.scrolledBottom = true;
+        // if there was actually scrolling (enough elements for scrolling)
+        if (this.friendsList.length > 14){
+            // if friends list is already fetching
+            if (!this.loading && !this.lastPage){
+                this.loadFriends();
+            }
+        }
+    },
     disableScrollable(){
+        // dont disable if there is not enough friends in list for scrolling
+        if (this.friendsList.length <= 14){
+            return;
+        }
         // Get the current page scroll position
         var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
         var scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
@@ -76,18 +108,58 @@ export default {
     },
     toggleShow(){
         this.showFriends = !this.showFriends;
+    },
+    loadFriends(){
+        this.loading = true;
+        const data = {
+            userId: this.userId,
+            page: this.page
+        }
+        this.$store.dispatch("friendRequest/fetchFriendsList", data).then(
+        (data) => {
+            for(let userReturnedInd in data){
+                // var contains = false;
+                // for (let user in this.friendsList){
+                //     if (commentWD.commentDTO.id == commentWithData.commentDTO.id){
+                //         contains = true;
+                //         break;
+                //     }
+                // }
+                let userReturned = data[userReturnedInd];
+                if (!this.friendsList.includes(userReturned)){
+                    this.friendsList.push(userReturned);
+                }
+            }
+            // if backend return less than 4 elements for the page then
+            // its last page
+            if (data.length < 21){
+                this.lastPage = true;
+            } else{
+                this.page += 1;
+            }
+            this.loading = false;
+        },
+        (error) => {
+            this.error = error;
+            console.log(error);
+        }
+    );
     }
   }
 };
 </script>
 
 <style>
-    #friendsList{
+    #friendsListBg{
+        float:left;
+        width:fit-content;
+        background-color: white;
         border-radius:10px;
+        box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+    }
+    #friendsList{
         max-height:410px;
         overflow-y:auto;
-        background-color: white;
         width:fit-content;
-        box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
     }
 </style>

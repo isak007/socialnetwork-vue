@@ -47,26 +47,78 @@
             </div>
         </div>
 
-        <div v-if="this.comment.edited" style="width:100%;float:left;color:grey;margin-left:5px;font-size:11px">
-            Edited &middot; Posted: {{this.comment.datePosted}}
-        </div>
-        <div v-else style="width:100%;float:left;color:grey;margin-left:5px;font-size:11px">
-            Posted: {{this.comment.datePosted}}
+        <VTooltip theme="tooltip" style="float:left;color:grey;margin-left:5px">
+            <div v-if="this.comment.edited" style="width:100%;float:left;color:grey;font-size:11px">
+                <a>Edited &middot; Posted {{this.displayDate != "fullDate" ? this.displayDate : this.comment.datePosted}}</a>
+            </div>
+            <div v-else style="width:100%;float:left;color:grey;font-size:11px">
+                <a>Posted {{this.displayDate != "fullDate" ? this.displayDate : this.comment.datePosted}}</a>
+            </div>
+            <template #popper>
+                {{this.dateFormatted}}
+            </template>
+        </VTooltip>
+        
+        <div style="float:left;width:100%">   
+            <div v-if="!this.editable" style="word-break: break-word" id="comment">{{this.comment.text}}</div>
+            <div v-else style="color:grey;margin-top:10px">
+                <textarea v-model="this.newComment" @input="(event) => this.handleNewComment(event)" style="padding:10px;width:100%;border:1px solid grey;border-radius:5px;outline:none"></textarea>
+            </div>
         </div>
 
-        <div v-if="!this.editable" style="word-break: break-word" id="comment">{{this.comment.text}}</div>
-        <div v-else style="color:grey;margin-top:10px">
-            <textarea v-model="this.newComment" @input="(event) => this.handleNewComment(event)" style="padding:10px;width:100%;border:1px solid grey;border-radius:5px;outline:none"></textarea>
-        </div>
+        <div style="width:100%;float:left">
+            <span style="color:grey;float:left" v-if="this.likes.length > 0">
+                <!-- <a v-if="this.likes.length == 1">{{this.likes.length}} like</a>
+                <span v-if="this.likes.length > 1">{{this.likes.length}} likes</span> -->
+                    <VMenu :triggers="['click']" :hideTriggers="['click']">
+                        <button @click="this.likesClicked" v-if="this.totalLikes == 1" style="color:grey;text-decoration:none" class="btn btn-link btn-sm">
+                            {{this.totalLikes}} like
+                        </button>
+                        <button @click="this.likesClicked" v-else-if="this.totalLikes > 1" style="color:grey;text-decoration:none" class="btn btn-link btn-sm">
+                            {{this.totalLikes}} likes
+                        </button>
 
-        <div style="width:100%;float:left;margin-left:5px">
-            <span style="color:grey" v-if="this.likes.length > 0">
-                <a v-if="this.likes.length == 1">{{this.likes.length}} like</a>
-                <span v-if="this.likes.length > 1">{{this.likes.length}} likes</span>
-                &middot;
+
+                        <template #popper>
+                            <perfect-scrollbar id="friendsList" @mouseenter="this.disableScrollable"  @mouseleave="this.enableScrollable"
+                            @ps-y-reach-end="this.scrollEndHandle" @ps-scroll-up="this.scrollUpHandle">
+                                <div style="padding:10px;padding-right:20px;padding-top:5px;padding-bottom:5px;max-height:247px">
+                                    <div v-for="(user) in this.likes" :key="user">
+                                        <router-link v-if='this.$store.state.auth.user.userId != user.id' :to="'/profile/'+user.username" style="color:#17a2b8;text-decoration:none">
+                                            <span style="color:grey">[{{user.username}}]</span> {{user.firstName}} {{user.lastName}}
+                                        </router-link>
+                                        <router-link v-else :to="'/my-profile'" style="color:#17a2b8;text-decoration:none">
+                                            <span style="color:grey">[me]</span> {{user.firstName}} {{user.lastName}}
+                                        </router-link>
+                                    </div>                              
+                                </div>
+                            </perfect-scrollbar>
+
+                            <div v-if="this.likes.length > 10 && !this.scrolledBottom && !this.loadingLikes" style="text-align:center">
+                                <!-- <div style="font-size:10px">Scroll down</div> -->
+                                <img style="width:10px;height:10px" src="../assets/icon-arrow-down.png">
+                            </div>
+                            <div v-if="this.likes.length > 10 && this.scrolledBottom && !this.loadingLikes" style="text-align:center">
+                                <!-- <div style="font-size:12px">&nbsp;</div> -->
+                                &nbsp;
+                            </div>
+
+                            <div v-if="this.loadingLikes" style="text-align:center">
+                                <Button style="color:#17a2b8;text-decoration:none" class="btn btn-link btn-sm" :disabled="this.loadingLikes">
+                                    <span
+                                        v-show="this.loadingLikes"
+                                        class="spinner-border spinner-border-sm"
+                                    ></span>
+                                </Button>
+                            </div>
+                        </template>
+                    </VMenu>
             </span>
-            <a style="color:#17a2b8;text-decoration:none" v-if="this.liked" @click="this.deleteLike" :disabled="this.editing || this.deleting || this.likingDisliking">Dislike</a>
-            <a style="color:#17a2b8;text-decoration:none" v-else @click="this.createLike" :disabled="this.editing || this.deleting || this.likingDisliking">Like</a>
+            <!-- <span v-if="this.totalLikes > 0" style="margin-top:3px;float:left">&middot;</span> -->
+            <span style="margin-top:3px;float:left">
+                <a style="color:#17a2b8;text-decoration:none" v-if="this.liked" @click="this.deleteLike" :disabled="this.editing || this.deleting || this.likingDisliking">Dislike</a>
+                <a style="color:#17a2b8;text-decoration:none;margin-left:5px" v-else @click="this.createLike" :disabled="this.editing || this.deleting || this.likingDisliking">Like</a>
+            </span>
         </div>
 
         
@@ -81,13 +133,32 @@
         commentWithData: Object
       },
       data() {
+        const months = {
+            1: "Jan",
+            2: "Feb",
+            3: "March",
+            4: "April",
+            5: "May",
+            6: "June",
+            7: "July",
+            8: "Aug",
+            9: "Sep",
+            10: "Oct",
+            11: "Nov",
+            12: "Dec"
+        }
+        var date = new Date(this.commentWithData.commentDTO.datePosted);
+        var dateFormatted = date.getDate() + " " + months[date.getMonth()] + " " + date.getFullYear() + " - " + 
+            (date.getHours().toString().length > 1 ? date.getHours().toString() : "0" + date.getHours().toString()) + ":" +
+            (date.getMinutes().toString().length > 1 ? date.getMinutes().toString() : "0" + date.getMinutes().toString()) + "h";
         return {
           content: "",
           showFriends: false,
           displayPictureObject: "",
-          user: Object,
+          user: "",
           comment: this.commentWithData.commentDTO,
           likes: this.commentWithData.commentLikesDTO,
+          totalLikes: this.commentWithData.totalLikes,
           liked: this.commentWithData.liked,
           likingDisliking: false,
           deleted:false,
@@ -96,13 +167,90 @@
           deleting:false,
           loading:false,
           canUpdate:false,
-          newComment:this.commentWithData.commentDTO.text
+          newComment:this.commentWithData.commentDTO.text,
+          displayDate:"",
+          dateFormatted:dateFormatted,
+          likesPage: 1, // because first page is loaded with comment
+          scrolledBottom: false,
+          lastPageLikes: this.commentWithData.totalLikes <= 15 ? true : false // bcs there are 15 likes per page
         };
       },
       mounted(){
+        this.displayDate = this.calculateTime();
+        this.setRefreshable();   
         this.getUserData();
       },
       methods: {
+        setRefreshable(){
+            window.setInterval( () => {
+                this.refreshCommentTimeAndLikes()
+            }, 60000);
+        },
+        refreshCommentTimeAndLikes(){
+            this.displayDate = this.calculateTime();
+            this.fetchLikes("refresh"); // this will only update the total number of likes
+        },
+        calculateTime(){
+            var startTime = new Date(this.comment.datePosted); 
+            var endTime = new Date();
+            var difference = endTime.getTime() - startTime.getTime(); // This will give difference in milliseconds
+            var displayDate = "";
+            var diffInMinutes = Math.floor(difference / 60000);
+            var diffInHours = Math.floor(diffInMinutes / 60);
+            var diffInDays = Math.floor(diffInHours / 24);
+            var diffInWeeks = Math.floor(diffInDays / 7);
+            var diffInMonths = Math.floor(diffInDays / 30);
+            var diffInYears = Math.floor(diffInMonths / 12);
+            if (diffInYears > 0){
+                if (diffInYears > 1){
+                    displayDate = diffInYears+" years ago";
+                }else{
+                    displayDate = "about a year ago";
+                }
+            } else{
+                if (diffInMonths > 0){
+                    if (diffInMonths > 1){
+                    displayDate = "about " + diffInMonths+" months ago";
+                    }else{
+                        displayDate = "about a month ago";
+                    }
+                } else{
+                    if (diffInWeeks > 0){
+                        if (diffInWeeks > 1){
+                            displayDate = diffInWeeks+" weeks ago";
+                        }else{
+                            displayDate = diffInWeeks+" week ago";
+                        }
+                    }
+                    else{
+                        if (diffInDays > 0){
+                            if (diffInDays > 1){
+                                displayDate = diffInDays+" days ago";
+                            }else{
+                                displayDate = diffInDays+" day ago";
+                            }
+                        } else{
+                            if (diffInHours > 0){
+                                if(diffInHours > 1){
+                                    displayDate = diffInHours+" hours ago";
+                                } else{
+                                    displayDate = diffInHours+" hour ago";
+                                }
+                            } else{
+                                if(diffInMinutes > 1){
+                                    displayDate = diffInMinutes+" minutes ago";
+                                } else if(diffInMinutes == 1){
+                                    displayDate = diffInMinutes+" minute ago";
+                                } else{
+                                    displayDate = "just now";
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return displayDate;
+        },
         handleNewComment(e){
             if (this.comment.text == this.newComment || this.newComment == ""){
                 this.canUpdate = false;
@@ -116,6 +264,7 @@
             this.$store.dispatch("comment/deleteComment", this.comment.id).then(
                 (data) => {
                     this.deleted= true;
+                    this.$emit('comment-delete', this.comment.id);
                 },
                 (error) => {
                     this.message =
@@ -152,11 +301,12 @@
               );
         },
         toggleEditable(){
-            // revert newDescription back to default
+            // revert newComment back to default
             if (this.editable){
                 this.newComment = this.comment.text;
             }
             this.editable = !this.editable;
+            this.canUpdate = false;
         },
         createLike(){
             this.likingDisliking = true;
@@ -166,6 +316,7 @@
             }
             this.$store.dispatch("commentLike/createLike", likeData).then(
                 (data) => {
+                    this.totalLikes += 1;
                     this.liked = true;
                     this.likes.push(data);
                     this.likingDisliking = false;
@@ -189,12 +340,13 @@
             this.$store.dispatch("commentLike/deleteLike", likeData).then(
                 (data) => {
                     for (let likeIndex in this.likes){
-                        var like = this.likes[likeIndex];
-                        if (like.userId == likeData.userId){
+                        var user = this.likes[likeIndex];
+                        if (user.id == likeData.userId){
                             this.likes.splice(likeIndex,1);
                             break;
                         }
                     }
+                    this.totalLikes -= 1;
                     this.liked = false; 
                     this.likingDisliking = false;
                 },
@@ -207,6 +359,31 @@
                         error.toString();
                 }
               );
+        },
+        fetchLikes(type){
+            if(type!="refresh") this.loadingLikes = true;
+            const data = {
+                commentId: this.comment.id,
+                page: type=="refresh" ? 0 : this.likesPage
+            }
+            this.$store.dispatch("commentLike/fetchCommentLikes", data).then(
+            (data) => {
+                if (type!="refresh"){
+                    this.likes.push.apply(this.likes,data.users);
+                    this.loadingLikes = false;
+                }
+                this.totalLikes = data.totalLikes;
+            },
+            (error) => {
+                this.loadingLikes = false;
+                this.message =
+                    (error.response &&
+                    error.response.data &&
+                    error.response.data.message) ||
+                    error.message ||
+                    error.toString();
+            }
+            );
         },
         toggleShow(){
             this.showFriends = !this.showFriends;

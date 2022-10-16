@@ -9,8 +9,8 @@ export const friendRequest = {
   namespaced: true,
   state: initialState,
   actions: {
-    fetchFriendsList({ commit }, userId) {
-        return FriendRequestService.fetchFriendsList(userId).then(
+    fetchFriendsList({ commit }, data) {
+        return FriendRequestService.fetchFriendsList(data).then(
           response => {
             commit('fetchSuccessfull');
             return Promise.resolve(response.data);

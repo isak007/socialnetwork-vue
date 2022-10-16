@@ -9,11 +9,15 @@ import SimpleTypeahead from 'vue3-simple-typeahead';
 import 'vue3-simple-typeahead/dist/vue3-simple-typeahead.css';
 import PerfectScrollbar from 'vue3-perfect-scrollbar'
 import 'vue3-perfect-scrollbar/dist/vue3-perfect-scrollbar.css'
+import FloatingVue from 'floating-vue'
+import 'floating-vue/dist/style.css'
+
 
 createApp(App)
     .use(PerfectScrollbar)
     .use(router)
     .use(store)
     .use(SimpleTypeahead)
+    .use(FloatingVue)
     .component("font-awesome-icon", FontAwesomeIcon)
     .mount('#app')
