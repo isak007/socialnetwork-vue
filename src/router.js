@@ -7,6 +7,8 @@ import Register from "./components/Register.vue";
 const UserProfile = () => import("./components/UserProfile.vue")
 const MyProfile = () => import("./components/MyProfile.vue")
 const AccountConfirmation = () => import("./components/AccountConfirmation.vue")
+const SearchPage = () => import("./components/SearchPage.vue")
+const FriendRequestsPage = () => import("./components/FriendRequestsPage.vue")
 
 const routes = [
   {
@@ -38,10 +40,24 @@ const routes = [
     component: MyProfile,
   },
   {
-    path: "/user-profile/:userId",
-    name: "user-profile",
+    path: "/friend-requests",
+    name: "friend-requests",
+    props: true,
+    // lazy-loaded
+    component: FriendRequestsPage,
+  },
+  {
+    path: "/profile/:username",
+    name: "profile",
     // lazy-loaded
     component: UserProfile,
+  },
+  {
+    path: "/search/:searchTerm",
+    name: "search",
+    props: true,
+    // lazy-loaded
+    component: SearchPage,
   },
 ];
 

@@ -12,7 +12,9 @@
                         style="width:50px;height:50px;border-radius:50%;margin-right:10px;box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;"
                         :src="this.displayProfilePictureObject"/>
                 </router-link>
-                <router-link v-if='this.$store.state.auth.user.userId != this.user.id' :to="'/profile/'+this.user.username"><a style="color:#17a2b8;text-decoration:none">{{this.user.username}}</a></router-link>
+                <router-link v-if='this.$store.state.auth.user.userId != this.user.id' :to="'/profile/'+this.user.username" style="color:#17a2b8;text-decoration:none">
+                    {{this.user.username}}
+                </router-link>
                 <router-link v-else :to="'/my-profile'" style="color:grey;text-decoration:none">{{this.user.username}}</router-link>
 
             </div>
@@ -83,7 +85,7 @@
                     <Button v-if="this.liked" @click="this.deleteLike" class="btn btn-outline-danger btn-sm" :disabled="this.editing || this.deleting || this.likingDisliking">Dislike</Button>
                     <Button v-else @click="this.createLike" class="btn btn-danger btn-sm" :disabled="this.editing || this.deleting || this.likingDisliking">Like</Button>
                 </div>
-                <div style="float:left">
+                <div style="float:left" :key="refreshKey">
                     <VMenu :triggers="['click']" :hideTriggers="['click']">
                         <button @click="this.likesClicked" v-if="this.totalLikes == 1" style="color:grey;text-decoration:none" class="btn btn-link btn-sm">
                             {{this.totalLikes}} like
@@ -93,12 +95,13 @@
                         </button>
 
                         <template #popper>
-                            <perfect-scrollbar id="friendsList" @mouseenter="this.disableScrollable"  @mouseleave="this.enableScrollable"
+                            <perfect-scrollbar @mouseenter="this.disableScrollable"  @mouseleave="this.enableScrollable"
                             @ps-y-reach-end="this.scrollEndHandle" @ps-scroll-up="this.scrollUpHandle">
                                 <div style="padding:10px;padding-right:20px;padding-top:5px;padding-bottom:5px;max-height:247px">
                                     <div v-for="(user) in this.postLikes" :key="user">
                                         <router-link v-if='this.$store.state.auth.user.userId != user.id' :to="'/profile/'+user.username" style="color:#17a2b8;text-decoration:none">
-                                            <span style="color:grey">[{{user.username}}]</span> {{user.firstName}} {{user.lastName}}
+                                            <!-- <span style="color:grey">[{{user.username}}]</span> -->
+                                            {{user.firstName}} {{user.lastName}}
                                         </router-link>
                                         <router-link v-else :to="'/my-profile'" style="color:#17a2b8;text-decoration:none">
                                             <span style="color:grey">[me]</span> {{user.firstName}} {{user.lastName}}
@@ -169,7 +172,8 @@
 
 <script>
 import CommentsList from './CommentsList.vue';
-import { PerfectScrollbar } from 'vue3-perfect-scrollbar'
+import { PerfectScrollbar } from 'vue3-perfect-scrollbar';
+import { ref } from 'vue';
     export default {
       name: "Post",
       components: {
@@ -223,7 +227,8 @@ import { PerfectScrollbar } from 'vue3-perfect-scrollbar'
           dateFormatted: dateFormatted,
           postLikesPage: 1, // because first page is loaded with post
           scrolledBottom: false,
-          lastPageLikes: this.postWithData.totalLikes <= 15 ? true : false // bcs there are 15 likes per page
+          lastPageLikes: this.postWithData.totalLikes <= 15 ? true : false, // bcs there are 15 likes per page
+          refreshKey: ref(0)
         };
       },
       created(){
@@ -416,6 +421,7 @@ import { PerfectScrollbar } from 'vue3-perfect-scrollbar'
                     this.liked = true;
                     this.postLikes.push(data);
                     this.likingDisliking = false;
+                    this.refreshKey +=1;
                 },
                 (error) => {
                     this.message =
@@ -445,6 +451,7 @@ import { PerfectScrollbar } from 'vue3-perfect-scrollbar'
                     this.totalLikes -= 1;
                     this.liked = false; 
                     this.likingDisliking = false;
+                    this.refreshKey +=1;
                 },
                 (error) => {
                     this.message =

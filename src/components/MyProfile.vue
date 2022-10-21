@@ -23,36 +23,43 @@
                     :width="300"
                     :height="300"
                     langType='en'
-                    img-format="png">
+                    img-format="png,jpg,jpeg,img">
             </my-upload>
             <div v-if="editable&&this.displayPictureObject"><Button style="color:black" @click="this.removeImage" class="btn btn-link btn-sm">Remove</Button></div>
             <button style="border: 1px solid gray; border-radius:2px" @click="toggleShow" v-if="editable">Change profile picture</button>
-          
-            <div style="margin-top:15px"> 
-                <h3>
-                    <i><strong>{{this.user.firstName}}&nbsp;{{this.user.lastName}}</strong></i>'s Profile
-                </h3>
-            </div>
 
-            <div style="color:grey"> 
-                <h5>@{{this.user.username}}</h5>
-            </div>
+            <div style="word-break: break-word;max-width:350px">
+                <div style="margin-top:15px"> 
+                    <h3>
+                        <i><strong>{{this.user.firstName}}&nbsp;{{this.user.lastName}}</strong></i>'s Profile
+                    </h3>
+                </div>
 
-            <div v-if="this.editable" class="form-group">
-                <label style="color:grey;float:left" for="description">Description</label>
-                <Field name="description" type="description" v-slot="{ field }" :value="this.user.profileDescription">
-                    <textarea style="resize:none;scroll:none;height:110px" maxlength="100" @keyup="this.descriptionHandler(field.value)" v-bind="field" class="form-control" autocomplete="off"/>
-                </Field>
-            </div>
-            <div v-if="!this.editable && this.user.profileDescription" class="form-group">
-                <div style="word-break: break-word">{{this.user.profileDescription}}</div>
+                <div style="color:grey"> 
+                    <h5>@{{this.user.username}}</h5>
+                </div>
+
+                <div v-if="this.editable">
+                    <label style="color:grey" for="description">Description</label>
+                    <Field name="description" type="description" v-slot="{ field }" :value="this.user.profileDescription">
+                        <textarea style="resize:none;scroll:none;height:90px" maxlength="100" @keyup="this.descriptionHandler(field.value)" v-bind="field" class="form-control" autocomplete="off"/>
+                    </Field>
+                </div>
+                <!-- <div v-if="!this.editable && this.user.profileDescription">
+                    <div style="word-break: break-word">{{this.user.profileDescription}}</div>
+                </div> -->
+                <div v-if="!this.editable && this.user.profileDescription" style="padding:10px;border-radius:5px; margin-top:10px; border:none;
+                box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;">
+                    <div style="word-break: break-word">{{this.user.profileDescription}}</div>
+                </div>
+
             </div>
         </div>
       </div>
 
       <div v-if="!this.editable" style="float:left; width:fit-content; margin-right:20px">
         <Form @submit="handleRegister" :validation-schema="schema">
-            <div>
+            <div style="color:grey">
                 <div style="float:left;margin-right:50px">
                     <div class="form-group">
                         <label for="username">Username</label>
@@ -453,7 +460,7 @@ import PostsList from './PostsList.vue';
                 const queryString = e.input;
                 this.$store.dispatch("user/fetchCityList", queryString).then(
                     (data) => {
-                    this.cityList = [];
+                        this.cityList = [];
                         for (let resultNum in data.items){
                             let result = data.items[resultNum]
                             if (!result.address.city || !result.address.countryName ||
@@ -597,6 +604,8 @@ import PostsList from './PostsList.vue';
             this.successful = false;
             this.loading = true;
 
+
+            console.log(this.newPictureObject);
             // send photo if user has updated the photo
             if (this.newPictureObject != null && this.newPictureObject != ""){
                 this.currentPictureObject = this.displayPictureObject;

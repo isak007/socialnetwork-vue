@@ -1,7 +1,7 @@
 <template>
   <div>
       
-     <div v-if="!this.loading" style="margin-bottom:15px">
+     <div v-if="!this.loading && this.userId == this.sessionUserId" style="margin-bottom:15px">
         <div style="margin-bottom:5px;">
             <Button v-if="!this.creatable" id="newPost" @click="this.toggleCreatable" class="btn btn-none">
                 <span style="vertical-align:middle"><img src="../assets/create-post-blk.png"></span>
@@ -61,6 +61,9 @@
             <Post :postWithData='postWithData' @post-delete="onPostDelete"/>
         </div>
      </div>
+     <div v-if="!this.loading && this.postsList.length < 3 && !this.lastPage" @click="this.loadMorePosts" style="text-align:center;margin-bottom:20px;cursor:pointer;color:#17a2b8">
+        Load more posts...
+     </div>
      <div v-if="this.loading" style="text-align:center;margin-bottom:20px">
         <span
             v-show="this.loading"
@@ -68,7 +71,15 @@
         ></span>
         <h3>Loading posts...</h3>
       </div>
-     <div style="text-align:center" v-if="this.postsList.length == 0 && !this.loading"><h3 style="color:grey"> No posts </h3></div>
+      
+      <div style="text-align:center" v-if="this.postsList.length == 0 && !this.loading">
+        <h3 v-if="this.friendRequest != undefined && this.friendRequest.requestStatus == 'ACCEPTED'" style="color:grey">
+            No posts
+        </h3>
+        <h3 v-if="this.friendRequest == undefined || this.friendRequest.requestStatus != 'ACCEPTED'" style="color:grey">
+            Become friends to see more posts
+        </h3>
+      </div>
   </div>
 </template>
 
@@ -81,7 +92,8 @@ export default {
     Post
   },
   props:{
-    userId: Number
+    userId: Object,
+    friendRequest: Object
   },
   data() {
     return {
@@ -97,12 +109,15 @@ export default {
       newPictureObject:"",
       newVisibility:"PUBLIC",
       page:0,
-      lastPage:false
+      lastPage:false,
+      sessionUserId: this.$store.state.auth.user.userId,
+      totalPosts: 0,
     };
   },
   mounted(){
     this.scrollEndHandle();
-    this.loadPosts();
+    if (this.$route.name =="profile" || this.$route.name =="my-profile") this.loadPosts();
+    else this.loadMainPagePosts();
   },
   methods: {
     onPostDelete(postId) {
@@ -110,6 +125,7 @@ export default {
             var postWD = this.postsList[postInd];
             if (postWD.postDTO.id == postId){
                 this.postsList.splice(postInd,1);
+                this.totalPosts -= 1;
                 break;
             }
         }
@@ -117,25 +133,32 @@ export default {
     // forceRerender(){
     //     this.refreshKey += 1;
     // },
+    // for specific case when user clicks 'Load more posts...'
+    loadMorePosts(){
+        if (this.$route.name =="profile") this.loadPosts();
+        else this.loadMainPagePosts();
+    },
     scrollEndHandle(){
         window.onscroll = () => {
             if ((window.innerHeight + window.scrollY) >= document.body.scrollHeight) {
                 if(!this.loading && !this.lastPage){
-                    this.loadPosts();
+                    if (this.$route.name =="profile") this.loadPosts();
+                    else this.loadMainPagePosts();
                 }
             }
         };
     },
     loadPosts(){
         this.loading=true;
+        var page =  Math.floor(this.postsList.length / 3);
         const postsData = {
             userId: this.userId,
-            page: this.page
+            page: page
         }
         this.$store.dispatch("post/fetchPostsList", postsData).then(
             (data) => {
-                for(let postIndexReturned in data){
-                    var postWithDataReturned = data[postIndexReturned];
+                for(let postIndexReturned in data.postsWithDataDTO){
+                    var postWithDataReturned = data.postsWithDataDTO[postIndexReturned];
                     var contains = false;
                     for (let postIndex in this.postsList){
                         var postWithData = this.postsList[postIndex];
@@ -148,12 +171,56 @@ export default {
                         this.postsList.push(postWithDataReturned);
                     }
                 }
-                if (data.length < 3){
+                this.totalPosts = data.totalPosts;
+                if (data.postsWithDataDTO.length < 3 || this.postsList.length == this.totalPosts){
                     this.lastPage = true;
-                } else{
-                    this.page += 1;
-                }
+                } 
+                // else{
+                //     this.page += 1;
+                // }
                 this.loading = false;
+            },
+            (error) => {
+                this.error = error;
+                console.log(error);
+            }
+        );
+    },
+    loadMainPagePosts(){
+        this.loading=true;
+        var page =  Math.floor(this.postsList.length / 3);
+        this.$store.dispatch("post/fetchMainPagePostsList", page).then(
+            (data) => {
+                // dont add posts if they are already in list
+                // case when user adds or delete a comment
+                // which changes the pages making same comments
+                // be fetched again alongside new ones
+                for(let postIndexReturned in data.postsWithDataDTO){
+                    var postWithDataReturned = data.postsWithDataDTO[postIndexReturned];
+                    var contains = false;
+                    for (let postIndex in this.postsList){
+                        var postWithData = this.postsList[postIndex];
+                        if (postWithData.postDTO.id == postWithDataReturned.postDTO.id){
+                            contains = true;
+                            break;
+                        }
+                    }
+                    if (!contains){
+                        this.postsList.push(postWithDataReturned);
+                    }
+                }
+                this.totalPosts = data.totalPosts;
+                // if backend return less than 3 posts when it returns at most 4 posts per page
+                // it means user has reached last page, same goes if backend returned 4 posts and
+                // length of all fetched posts is the same as the length of total posts
+                if (data.postsWithDataDTO.length < 3 || this.postsList.length == this.totalPosts){
+                    this.lastPage = true;
+                } 
+                // else{
+                //     this.page += 1;
+                // }
+                this.loading = false;
+                console.log(this.postsList);
             },
             (error) => {
                 this.error = error;
@@ -196,6 +263,7 @@ export default {
         this.$store.dispatch("post/createPost", post).then(
             (data) => {
                 this.postsList.unshift(data);
+                this.totalPosts += 1;
                 this.toggleCreatable();
                 this.creatingPost = false;
                 //this.forceRerender();

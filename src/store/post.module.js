@@ -21,6 +21,18 @@ export const post = {
           }
         );
     },
+    fetchMainPagePostsList({ commit }, page) {
+        return PostService.fetchMainPagePostsList(page).then(
+          response => {
+            commit('fetchSuccessfull');
+            return Promise.resolve(response.data);
+          },
+          error => {
+            commit('fetchFailure');
+            return Promise.reject(error);
+          }
+        );
+    },
     createPost({ commit }, post) {
         return PostService.createPost(post).then(
           response => {

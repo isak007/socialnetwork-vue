@@ -14,6 +14,133 @@
             <font-awesome-icon icon="home" /> Home
           </router-link>
         </li>
+        <div ref="friendRequestsList">
+            <VMenu :triggers="['click']" :hideTriggers="['click']" :autoHide="false"  v-if="this.showFriendRequests">
+                <!-- <button @click="this.likesClicked" v-if="this.totalLikes == 1" style="color:grey;text-decoration:none" class="btn btn-link btn-sm">
+                    {{this.totalLikes}} like
+                </button>
+                <button @click="this.likesClicked" v-else-if="this.totalLikes > 1" style="color:grey;text-decoration:none" class="btn btn-link btn-sm">
+                    {{this.totalLikes}} likes
+                </button> -->
+                <li class="nav-item" id="friendRequestsLink" > <!-- @click="this.fetchFriendRequests" -->
+                    <div class="nav-link" id="friendRequestsLink1">
+                        <img id="friendRequestsImg" src="./assets/add-user-23.png" style="min-height:25px;min-width:25px">
+                    </div>
+                </li>
+
+
+                <template #popper>
+                    <div style="display:inline-block">
+                        <h5 style="margin-top:10px;margin-left:15px;float:left">Incoming requests ({{this.totalPendingFriendRequests}})</h5>
+                        <Button v-if="!this.loadingFriendRequests" style="float:left;color:#17a2b8;text-decoration:none;margin-top:8px;margin-left:120px;margin-right:10px" @click="this.goToFriendRequestsPage" class="btn btn-link btn-sm" :disabled="this.loadingFriendRequests">
+                            <span>View all...</span>
+                        </Button>
+                    </div>
+                    <perfect-scrollbar @mouseenter="this.disableScrollable"  @mouseleave="this.enableScrollable"
+                    @ps-y-reach-end="this.scrollEndHandle" @ps-scroll-up="this.scrollUpHandle" style="max-height:600px">
+                        <div v-if="this.friendRequestsWithData.length > 0" style="padding-right:5px;max-width:425px">
+                            
+                            <div v-for="(frWithData) in this.friendRequestsWithData" :key="frWithData">
+                                <UserFriendRequest :frWithData='frWithData' @update-request="onUpdateRequest"/>
+
+                            </div>
+                            <!-- <Button v-if="!this.lastPageFriendRequests" style="color:#17a2b8;text-decoration:none;margin-bottom:5px;margin-left:10px" @click="this.fetchFriendRequests" class="btn btn-link btn-sm" :disabled="this.loadingFriendRequests">
+                                <span
+                                    v-show="this.loadingFriendRequests"
+                                    class="spinner-border spinner-border-sm"
+                                ></span>
+                                <span v-if="!this.loadingFriendRequests && !this.lastPageFriendRequests">View all...</span>
+                            </Button>                               -->
+                        </div>
+                        <div v-else style="text-align:center;padding:15px">
+                            <div>No new requests</div>
+                        </div>
+                    </perfect-scrollbar>
+                    <div>&nbsp;</div>
+                    <!-- <Button v-if="!this.loadingFriendRequests" class="btn btn-link btn-sm" disabled>
+                        <span></span>
+                    </Button>   -->
+
+                    <!-- <div v-if="this.loadingFriendRequests" style="text-align:center">
+                        <Button style="color:#17a2b8;text-decoration:none" class="btn btn-link btn-sm" :disabled="this.loadingFriendRequests">
+                            <span
+                                v-show="this.loadingFriendRequests"
+                                class="spinner-border spinner-border-sm"
+                            ></span>
+                        </Button>
+                    </div> -->
+                </template>
+            </VMenu>
+            <div v-else>
+                <li class="nav-item" id="friendRequestsLink" > <!-- @click="this.fetchFriendRequests" -->
+                    <div class="nav-link" id="friendRequestsLink1">
+                        <img id="friendRequestsImg" src="./assets/add-user-23.png" style="min-height:25px;min-width:25px">
+                    </div>
+                </li>
+            </div>
+        </div>
+
+      </div>
+      
+      <div v-if="currentUser" class="navbar-nav mc-auto" style="width:400px">
+        <vue3-simple-typeahead
+            ref="searchInput"
+            style="display: block;
+                width:100%;
+                height: calc(1.5em + .75rem + 2px);
+                padding: .375rem .75rem;
+                font-size: 1rem;
+                font-weight: 400;
+                line-height: 1.5;
+                color: #495057;
+                background-color: transparent!important;
+                background-clip: padding-box;
+                border: 1px solid #ced4da;
+                border-radius: .25rem;
+                transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out"
+            id="typeahead_id_search"
+            placeholder="Search users..."
+            :value="this.searchInput"
+            :items="this.userList"
+            :minInputLength="3"
+            :itemProjection="itemProjectionFunction"
+            :selectOnTab=false
+            @keyup.enter="onSearch"
+            @selectItem="(event) => selectUser(event)"
+            @onInput="(event) => updateUserList(event)"
+            @onFocus="onFocusEventHandler"
+            @onBlur="(event) => onBlurInputHandler(event)">
+            <template #list-item-text="slot">
+                <div v-if="!this.loadingUsers" style="overflow:hidden">
+                    <span style="margin-right:20px;float:left">
+                        <!-- <img v-if="!this.hasImage(slot.item)"
+                            style="width:35px;height:35px;border-radius:50%"
+                            id="profile-img"
+                            src="//ssl.gstatic.com/accounts/ui/avatar_2x.png"
+                            class="profile-img-card"/>
+                        <img v-else :src="imageContainer" style="width:35px;height:35px;border-radius:50%"> -->
+                        <ImageContainer :userSearchFormat="slot.item" :usersRaw="this.usersRaw"></ImageContainer>
+                    </span>&nbsp;
+                    <span style="float:left">
+                        <div>{{slot.item.split(" | ")[0]}}</div>
+                        <div style="color:grey">@{{slot.item.split(" | ")[1]}}</div>
+                    </span>
+                    <!-- <span><img src="./assets/location_tag.png"></span>&nbsp; -->
+                    <!-- <span v-html="slot.boldMatchText(slot.itemProjection(slot.item))"></span> -->
+                </div>
+                <div v-else style="text-align:center">
+                    <Button style="color:#17a2b8;text-decoration:none" @click="this.loadComments" class="btn btn-link btn-sm" :disabled="this.loadingUsers">
+                        <span
+                            v-show="this.loadingUsers"
+                            class="spinner-border spinner-border-sm"
+                        ></span>
+                    </Button>
+                </div>
+            </template>
+        </vue3-simple-typeahead>
+        <Button class="btn btn-outlin-info btn-sm" @click="this.onSearch" style="margin-left:5px;color:white;vertical-align:middle">
+            <img src="./assets/search-icon-white-28.png">
+        </Button>
       </div>
 
       <div v-if="!currentUser" class="navbar-nav ml-auto">
@@ -33,7 +160,7 @@
         <li class="nav-item">
           <router-link to="/my-profile" class="nav-link">
             <font-awesome-icon icon="user" />
-            {{ currentUser.sub }}
+            {{ currentUser.username }}
           </router-link>
         </li>
         <li class="nav-item">
@@ -51,22 +178,370 @@
 </template>
 
 <script>
+import 'babel-polyfill'; // es6 shim
+import ImageContainer from './components/ImageContainer.vue'
+import UserFriendRequest from './components/UserFriendRequest.vue'
+import { PerfectScrollbar } from 'vue3-perfect-scrollbar'
 export default {
+  components: {
+    ImageContainer,
+    UserFriendRequest,
+    PerfectScrollbar
+  },
   computed: {
     currentUser() {
       return this.$store.state.auth.user;
     }
   },
+  data(){
+    return {
+        searchInput:"",
+        selectedUser:"",
+        usersRaw:[],
+        userList:[],
+        loadingUsers:false,
+        imageContainer:'',
+        friendRequestsWithData:[],
+        loadingFriendRequests:true,
+        lastPageFriendRequests:false,
+        totalFriendRequests:0,
+        totalPendingFriendRequests:0,
+        showFriendRequests: true,
+        unwatchFriendRequests:'',
+        unwatchSearchInput:'',
+        unwatchSearchInputParams:'',
+        unwatchLogin:'',
+    }
+  },
+  created(){
+    // on refresh page
+    if (this.currentUser){
+        this.setInitial();
+    }
+    // needed watcher bcs on create user is not necesserily logged in
+    // but might log in later which won't be covered by created method
+    else{
+        this.unwatchLogin = this.$watch(
+            () => this.$route,
+                (to, from) => {
+                    // if user is logged in successfully set initial watchers
+                    if (from.path == "/login" && to.path == "/" && this.currentUser){
+                        this.setInitial();
+                    } 
+                }
+            )
+    }
+  },
   methods: {
+    setInitial(){
+        this.fetchFriendRequests();
+        this.setRefreshable();
+        this.unwatchFriendRequests = this.$watch(
+            () => this.$route,
+                (to, from) => {
+                    if (to.name == "friend-requests"){
+                        this.showFriendRequests= false;
+                    } else if (from.name == "friend-requests"){
+                        this.showFriendRequests= true;
+                    }
+                }
+            )
+        this.unwatchSearchInput = this.$watch(
+            () => this.$route,
+                (to, from) => {
+                    if (from.name == "search" && to.name != "search"){
+                    this.$refs.searchInput.clearInput();
+                        this.searchInput = "";
+                        this.selectedUser = "";
+                    } 
+                }
+            )
+        this.unwatchSearchInputParams = this.$watch(
+                () => this.$route.params,
+                (toParams, previousParams) => {
+                    this.searchInput = toParams.searchTerm;
+                }
+            )
+        
+    },
+    onUpdateRequest(friendRequestChanged) {
+        for (let requestInd in this.friendRequestsWithData){
+            var friendRequestWithData = this.friendRequestsWithData[requestInd];
+            if (friendRequestWithData.friendRequestDTO.id == friendRequestChanged.id){
+                this.friendRequestsWithData[requestInd].friendRequestDTO = friendRequestChanged;
+                // this.friendRequestsWithData.splice(requestInd,1);
+                break;
+            }
+        }
+        this.totalPendingFriendRequests -= 1;
+        if (this.$route.name=="search"){
+            this.$router.push({
+                name:"search",
+                query: { 
+                    searchTerm: this.searchInput, 
+                }
+            })
+        }
+        if (this.$route.name=="profile"){
+            this.$router.push({
+                name:"profile",
+                query: { 
+                    friend_request: friendRequestChanged.requestStatus,
+                }
+            })
+        }
+        if (this.$route.path=="/"){
+            this.$router.push({
+                name:"home",
+                query: { 
+                    refresh: 'home',
+                }
+            })
+        }
+        // +this.$route.path.replace("/profile/",'')
+        // this.$root.$data.friendRequestsWithData = this.friendRequestsWithData;
+    },
+    setRefreshable(){
+        window.setInterval( () => {
+            this.fetchFriendRequests();
+        }, 60000);
+    },
+    goToFriendRequestsPage(){
+        this.$router.push("/friend-requests")
+    },
+    scrollUpHandle(e){
+        this.scrolledBottom = false;
+    },
+    scrollEndHandle(e){
+        this.scrolledBottom = true;
+    },
+    disableScrollable(){
+        // dont disable if there is not enough friends in list for scrolling
+        if (this.friendRequestsWithData.length <= 5){
+            return;
+        }
+        // Get the current page scroll position
+        var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        var scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+    
+        // if any scroll is attempted, set this to the previous value
+        window.onscroll = function() {
+            window.scrollTo(scrollLeft, scrollTop);
+        };
+    },
+    enableScrollable(){
+        window.onscroll = function() {};
+    },
+    hasImage(user){
+        for (let index in this.usersRaw){
+            let userRaw = this.usersRaw[index];
+            let username = user.split(" | ")[1];
+            console.log(username);
+            console.log(userRaw.username);
+            if (username == userRaw.username){
+                this.fetchProfilePicture(userRaw.id);
+                return true;
+            }
+        }
+        return false;
+    },
+    getImage(user){
+        for (let index in this.usersRaw){
+            let userRaw = this.usersRaw[index];
+            let username = user.split(" | ")[1];
+            console.log(username);
+            console.log(userRaw.username);
+            if (username == userRaw.username){
+                //this.fetchProfilePicture(userRaw.id);
+            }
+        }
+    },
+    onSearch(){
+        if (this.searchInput.length < 3) return;
+        this.$router.push("/search/"+this.searchInput);
+    },
+    fetchProfilePicture(userId) {
+        this.$store.dispatch("user/fetchProfilePicture", userId).then(
+            (data) => {
+                const imageBlob = new Blob([data.data])
+                const imageObjectURL = URL.createObjectURL(imageBlob);
+                console.log(imageObjectURL);
+                this.imageContainer = imageObjectURL;
+                // URL.revokeObjectURL(this.imageBlob)
+                // this.currentPictureObject = imageObjectURL;
+                // this.displayPictureObject = imageObjectURL;
+            },
+            (error) => {
+                console.log(error);
+                return null;
+            }
+        );
+
+    },
+    selectUser(event){
+        this.$refs.searchInput.clearInput();
+        this.searchInput = "";
+        this.selectedUser = "";
+        var username = event.split(" | ")[1];
+        console.log("Selected user");
+        console.log(username);
+        if (this.$store.state.auth.user.username == username){
+            this.$router.push("/my-profile");
+        } else{
+            this.$router.push("/profile/"+username);
+        }
+    },
+    onBlurInputHandler(e){
+        // if (e.input == ""){
+        //     this.cityError = "";
+        //     this.selectedCity = "";
+        //     return;
+        // }
+        // else if (!this.cityList.includes(e.input)){
+        //     this.selectedCity = "";
+        //     this.cityError = "City is invalid."
+        //     return;
+        // }
+        // this.cityError="";
+    },
+    updateUserList(e){
+        this.searchInput = e.input;
+        if (e.input.length < 3) {
+            return;
+        }
+        this.usersRaw = [];
+        this.userList = [];
+        // doing this so that while loading the user will be shown loading icon
+        // which takes one field
+        this.userList.push(this.searchInput);
+        this.loadingUsers = true;
+        const data = {
+            queryString : e.input,
+            page: 0,
+            itemsPerPage: 10
+        }
+        this.$store.dispatch("user/searchUsers", data).then(
+            (data) => {
+                this.usersRaw = [];
+                this.userList = [];
+                for (let userInd in data){
+                    let user = data[userInd];
+                    this.usersRaw.push(user);
+                    this.userList.push(user.firstName + " " + user.lastName + " | " + user.username);
+                }
+                this.loadingUsers = false;
+            },
+            (error) => {
+                this.usersRaw = [];
+                this.userList = [];
+                this.loadingUsers = false;
+                console.log(
+                    (error.response &&
+                    error.response.data &&
+                    error.response.data.message) ||
+                    error.message ||
+                    error.toString()
+                )}
+        );
+    },
+    fetchFriendRequests(){
+        // if user is not on friend-requests page(where fetching is needed to update the changes) 
+        // page and the friend requests have already been fetched, don't fetch again
+        // if (/*this.$route.name == "friend-requests" &&*/ type!="init") return;
+        this.loadingFriendRequests = true;
+        var page = 0;
+        this.$store.dispatch("friendRequest/fetchFriendRequests", page).then(
+            (data) => {
+                this.friendRequestsWithData = [];
+                for (let ind in data.friendRequestsWithDataDTO){
+                    let frWithData = data.friendRequestsWithDataDTO[ind];
+                    this.friendRequestsWithData.push(frWithData);
+                }
+                this.totalPendingFriendRequests = data.friendRequestsWithDataDTO.length;
+                this.totalFriendRequests = data.totalFriendRequests;
+                if (data.friendRequestsWithDataDTO.length <= 10){
+                    this.lastPageFriendRequests = true;
+                }
+                this.loadingFriendRequests = false;
+            },
+            (error) => {
+                this.loadingFriendRequests = false;
+                console.log(
+                    (error.response &&
+                    error.response.data &&
+                    error.response.data.message) ||
+                    error.message ||
+                    error.toString()
+                )}
+        );
+    },
     logOut() {
+      // if watchLogin wasn't set bcs page was refreshed and user was logged in (see in created method)
+      if (this.unwatchLogin == ''){
+        this.unwatchLogin = this.$watch(
+            () => this.$route,
+                (to, from) => {
+                    // if user is logged in successfully set initial watchers
+                    if (from.path == "/login" && to.path == "/" && this.currentUser){
+                        this.setInitial();
+                    } 
+                }
+            )
+      }
+
+      this.unwatchFriendRequests();
+      this.unwatchSearchInput();
+      this.unwatchSearchInputParams();
+      this.searchInput = '';
+      this.searchTerm = '';
+      this.selectedUser = '';
+      this.usersRaw=[];
+      this.userList=[];
+      this.imageContainer='';
+      this.friendRequestsWithData=[];
+      this.loadingFriendRequests=false;
+      this.lastPageFriendRequests=false;
+      this.totalFriendRequests=0;
+      this.totalPendingFriendRequests=0;
+      this.showFriendRequests= true;
       this.$store.dispatch('auth/logout');
       this.$router.push({path:'/login'});
-    }
+    },
   }
 };
 </script>
 
 <style>
+  #friendRequestsLink{
+    opacity:0.5;
+  }
+  #friendRequestsLink1{
+    opacity:1;
+  }
+  #friendRequestsLink:hover{
+    opacity:0.9;
+  }
+
+  div#typeahead_id_search_wrapper.simple-typeahead :focus{
+    color: white!important;
+    background-color: none!important;
+    /* border-color: #80bdff!important; */
+    outline: 0;
+    /* box-shadow: 0 0 0 .2rem rgba(0,123,255,.25); */
+  }
+
+  div#typeahead_id_search_wrapper.simple-typeahead {
+    background-color: transparent!important;
+    border:none!important;
+  }
+
+  input#typeahead_id_search.simple-typeahead-input{
+    color: #ffffff7c!important;
+    background: 
+      linear-gradient(rgb(255, 255, 255), rgb(255, 255, 255)) center bottom 5px /calc(100% - 10px) 0.5px no-repeat;
+    border:none!important;
+  }
+
   .navbar-brand{
     cursor:default;
   }

@@ -9,7 +9,13 @@ const API_KEY = process.env.VUE_APP_API_KEY_FOR_MAPS_SERVICES;
 class UserService{
     getUserData(userId){
         return axios.get(USERS_API_BASE_URL+'/fetch/'+userId, 
-            { headers: authHeader()});
+            { headers: authHeader()}
+        );
+    }
+    getUserDataByUsername(username){
+        return axios.get(USERS_API_BASE_URL+'/fetch/username/'+username, 
+            { headers: authHeader()}
+        );
     }
     fetchProfilePicture(userId){
         return axios.get(USERS_API_BASE_URL+'/profile-picture', 
@@ -44,6 +50,17 @@ class UserService{
                 apiKey: API_KEY
             }
         })
+    }
+    searchUsers(data){
+        return axios.get(USERS_API_BASE_URL+'/search/'+data.queryString,
+            { 
+                headers: authHeader(),
+                params:{
+                    page: data.page,
+                    itemsPerPage: data.itemsPerPage
+                }
+            }
+        );
     }
 }
 

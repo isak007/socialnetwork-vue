@@ -12,6 +12,14 @@ class PostService{
             }
         })
     }
+    fetchMainPagePostsList(page){
+        return axios.get(USERS_API_BASE_URL,{
+            headers: authHeader(),
+            params: {
+                page:page
+            }
+        })
+    }
     createPost(post){
         return axios.post(USERS_API_BASE_URL, post,
         {

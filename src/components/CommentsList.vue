@@ -46,7 +46,7 @@
                     v-show="this.loadingComments && this.showComments"
                     class="spinner-border spinner-border-sm"
                 ></span>
-                <!-- <span v-if="!this.loadingComments && this.showComments && this.commentsList.length == 3">Load more comments...</span> -->
+                <span v-if="!this.loadingComments && this.showComments && !this.lastPage">Load more comments...</span>
                 <span v-if="!this.loadingComments && !this.showComments && this.commentsList.length == 0">Load comments...</span>
             </Button>
         </div>
@@ -91,20 +91,27 @@ export default {
       newComment:"",
       scrolledBottom:false,
       refreshCommentsTimer:'',
-      refreshKey:ref(0)
+      refreshKey:ref(0),
+      totalComments:0
     };
   },
   created(){
   },
   methods: {
     onCommentDelete(commentId) {
+        // if (!this.lastPage && (this.commentsList.length/(this.page+1) % 4 == 0)){
+        //     this.page -= 1;
+        //     if (this.page < 0) this.page = 0;
+        // }
         for (let commentInd in this.commentsList){
             var commentWD = this.commentsList[commentInd];
             if (commentWD.commentDTO.id == commentId){
                 this.commentsList.splice(commentInd,1);
+                this.totalComments -= 1;
                 break;
             }
         }
+        
     },
     toggleComments(){
         this.showComments = !this.showComments;
@@ -119,12 +126,12 @@ export default {
     scrollEndHandle(e){
         this.scrolledBottom = true;
         // if there was actually scrolling (enough elements for scrolling)
-        if (this.commentsList.length > 3){
-            // if comments are already fetching
-            if (!this.loadingComments && !this.lastPage){
-                this.loadComments();
-            }
-        }
+        // if (this.commentsList.length > 3){
+        //     // if comments are already fetching
+        //     if (!this.loadingComments && !this.lastPage){
+        //         this.loadComments();
+        //     }
+        // }
     },
     forceRerender(){
         this.refreshKey += 1;
@@ -138,10 +145,12 @@ export default {
         }
         this.$store.dispatch("comment/createComment", comment).then(
             (data) => {
+                console.log(data);
                 this.commentsList.unshift(data);
-                if (this.commentsList.length/(this.page+1) % 4 == 1){
-                    this.page += 1;
-                }
+                // if (this.commentsList.length/(this.page+1) % 4 == 1){
+                //     this.page += 1;
+                // }
+                this.totalComments += 1;
                 this.canCreateComment = false;
                 this.creating = false;
                 this.loading = false;
@@ -188,9 +197,10 @@ export default {
     loadComments(){
         this.showComments = true;
         this.loadingComments = true;
+        var page =  Math.floor(this.commentsList.length / 4);
         const commentsData = {
             postId: this.postId,
-            page: this.page
+            page: page
         }
         this.$store.dispatch("comment/fetchCommentsList", commentsData).then(
             (data) => {
@@ -199,8 +209,8 @@ export default {
                 // if (this.commentsList.length == 0 && data.length > 0){
                 //     this.setRefreshable();
                 // }
-                for(let commentIndex in data){
-                    var commentWithData = data[commentIndex];
+                for(let commentIndex in data.commentsWithDataDTO){
+                    var commentWithData = data.commentsWithDataDTO[commentIndex];
                     var contains = false;
                     for (let commentInd in this.commentsList){
                         var commentWD = this.commentsList[commentInd];
@@ -213,13 +223,17 @@ export default {
                         this.commentsList.push(commentWithData);
                     }
                 }
+                this.totalComments = data.totalComments;
                 // if backend return less than 4 elements for the page then
                 // its last page
-                if (data.length < 4){
+                if (data.commentsWithDataDTO.length < 4 || this.commentsList.length == this.totalComments){
                     this.lastPage = true;
-                } else{
-                    this.page += 1;
-                }
+                } 
+                // else{
+                //     this.page += 1;
+                // }
+                this.loading = false;
+                console.log(this.postsList);
                 this.loadingComments = false;
             },
             (error) => {

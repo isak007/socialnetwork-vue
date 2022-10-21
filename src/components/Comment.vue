@@ -67,7 +67,7 @@
         </div>
 
         <div style="width:100%;float:left">
-            <span style="color:grey;float:left" v-if="this.likes.length > 0">
+            <span style="color:grey;float:left" v-if="this.likes.length > 0" :key="refreshKey">
                 <!-- <a v-if="this.likes.length == 1">{{this.likes.length}} like</a>
                 <span v-if="this.likes.length > 1">{{this.likes.length}} likes</span> -->
                     <VMenu :triggers="['click']" :hideTriggers="['click']">
@@ -85,7 +85,7 @@
                                 <div style="padding:10px;padding-right:20px;padding-top:5px;padding-bottom:5px;max-height:247px">
                                     <div v-for="(user) in this.likes" :key="user">
                                         <router-link v-if='this.$store.state.auth.user.userId != user.id' :to="'/profile/'+user.username" style="color:#17a2b8;text-decoration:none">
-                                            <span style="color:grey">[{{user.username}}]</span> {{user.firstName}} {{user.lastName}}
+                                            <!-- <span style="color:grey">[{{user.username}}]</span> -->{{user.firstName}} {{user.lastName}}
                                         </router-link>
                                         <router-link v-else :to="'/my-profile'" style="color:#17a2b8;text-decoration:none">
                                             <span style="color:grey">[me]</span> {{user.firstName}} {{user.lastName}}
@@ -126,7 +126,8 @@
     </div>
 </template>
 
-<script>    
+<script>
+import { ref } from 'vue';
     export default {
       name: "Comment",
       props: {
@@ -172,7 +173,8 @@
           dateFormatted:dateFormatted,
           likesPage: 1, // because first page is loaded with comment
           scrolledBottom: false,
-          lastPageLikes: this.commentWithData.totalLikes <= 15 ? true : false // bcs there are 15 likes per page
+          lastPageLikes: this.commentWithData.totalLikes <= 15 ? true : false, // bcs there are 15 likes per page
+          refreshKey: ref(0)
         };
       },
       mounted(){
@@ -320,6 +322,7 @@
                     this.liked = true;
                     this.likes.push(data);
                     this.likingDisliking = false;
+                    this.refreshKey+=1;
                 },
                 (error) => {
                     this.message =
@@ -349,6 +352,7 @@
                     this.totalLikes -= 1;
                     this.liked = false; 
                     this.likingDisliking = false;
+                    this.refreshKey+=1;
                 },
                 (error) => {
                     this.message =

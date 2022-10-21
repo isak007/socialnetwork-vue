@@ -71,7 +71,7 @@
             background-color:#F5F5F5;
             border-radius:10px;
             width:150px;
-            height:170px;
+            height:180px;
             overflow:hidden;
             text-align: center;
             box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
