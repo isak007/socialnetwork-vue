@@ -6,7 +6,9 @@ import { post } from "./post.module";
 import { comment } from "./comment.module";
 import { postLike } from "./post.like.module";
 import { commentLike } from "./comment.like.module";
-
+import { chat } from "./chat.module";
+import { chatLine } from "./chat.line.module";
+import { notification } from "./notification.module";
 
 const store = createStore({
   modules: {
@@ -16,7 +18,10 @@ const store = createStore({
     post,
     postLike,
     comment,
-    commentLike
+    commentLike,
+    chatLine,
+    chat,
+    notification
   },
 });
 

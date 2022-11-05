@@ -9,6 +9,9 @@ const MyProfile = () => import("./components/MyProfile.vue")
 const AccountConfirmation = () => import("./components/AccountConfirmation.vue")
 const SearchPage = () => import("./components/SearchPage.vue")
 const FriendRequestsPage = () => import("./components/FriendRequestsPage.vue")
+const PasswordReset = () => import("./components/PasswordReset.vue")
+const NotificationsPage = () => import("./components/NotificationsPage.vue")
+const PostPage = () => import("./components/PostPage.vue")
 
 const routes = [
   {
@@ -20,6 +23,22 @@ const routes = [
     path: "/account-confirmation/:jwt",
     name: "account-confirmation",
     component: AccountConfirmation,
+  },
+  {
+    path: "/notifications",
+    name: "notifications",
+    component: NotificationsPage,
+  },
+  {
+    path: "/post/:postId",
+    name: "post",
+    component: PostPage,
+  },
+  {
+    path: "/password-reset/:jwt", //:passwordResetData(.*)"
+    name: "password-reset",
+    component: PasswordReset,
+    props: true,
   },
   {
     path: "/welcome",
@@ -78,6 +97,12 @@ router.beforeEach((to, from, next) => {
         next();
     }
     else if (to.path.startsWith("/account-confirmation/") && loggedIn){
+        next("/");
+    }
+    else if (to.path.startsWith("/password-reset/") && !loggedIn){
+        next();
+    }
+    else if (to.path.startsWith("/password-reset/") && loggedIn){
         next("/");
     }
     else if (to.path == "/" && !loggedIn){

@@ -12,6 +12,11 @@ class PostService{
             }
         })
     }
+    fetchPost(postId){
+        return axios.get(USERS_API_BASE_URL+"/"+postId,{
+            headers: authHeader(),
+        })
+    }
     fetchMainPagePostsList(page){
         return axios.get(USERS_API_BASE_URL,{
             headers: authHeader(),

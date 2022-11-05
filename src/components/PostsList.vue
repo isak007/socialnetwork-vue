@@ -23,7 +23,7 @@
                 <div>
                     <label style="color:grey">Upload picture</label>
                     <br/>
-                    <input type="file" name="picture" :onInputCapture="this.onPictureChange" accept=".jpg,.png,.img" />
+                    <input type="file" name="picture" :onInputCapture="this.onPictureChange" accept=".jpg,.png,.img"/>
                 </div>
                 <div style="color:grey;margin-top:10px">
                     <label>Description</label>
@@ -73,10 +73,10 @@
       </div>
       
       <div style="text-align:center" v-if="this.postsList.length == 0 && !this.loading">
-        <h3 v-if="this.friendRequest != undefined && this.friendRequest.requestStatus == 'ACCEPTED'" style="color:grey">
+        <h3 v-if="(this.friendRequest != undefined && this.friendRequest.requestStatus == 'ACCEPTED') || this.$route.path == '/' || this.$route.path == '/my-profile'" style="color:grey">
             No posts
         </h3>
-        <h3 v-if="this.friendRequest == undefined || this.friendRequest.requestStatus != 'ACCEPTED'" style="color:grey">
+        <h3 v-if="this.$route.name=='profile' && (this.friendRequest == undefined || this.friendRequest.requestStatus != 'ACCEPTED')" style="color:grey">
             Become friends to see more posts
         </h3>
       </div>
@@ -291,6 +291,13 @@ export default {
     .v-enter-from,
     .v-leave-to {
     opacity: 0;
+    }
+
+    #newPost{
+        opacity: 0.7;
+    }
+    #newPost:hover{
+        opacity: 1;
     }
 
     #postPicture{

@@ -3,7 +3,7 @@
     <div style="float:left;width:100%">
         <div style="float:left;margin-right:10px;margin-left:10px">
             <h3 v-if="this.loading">Friends</h3>
-            <h3 v-else>Friends ({{friendsList.length}})</h3>
+            <h3 v-else>Friends ({{this.totalFriends}})</h3>
         </div>
         <div v-if="!this.loading" style="float:left;margin-bottom:10px">
             <Button v-if="showFriends" @click="this.toggleShow" class="btn btn-info">Hide friends</Button>
@@ -70,6 +70,7 @@ export default {
       scrolledBottom: false,
       page:0,
       lastPage:false,
+      totalFriends:0,
     };
   },
   created(){
@@ -111,13 +112,15 @@ export default {
     },
     loadFriends(){
         this.loading = true;
+        var page =  Math.floor(this.friendsList.length / 21);
         const data = {
             userId: this.userId,
-            page: this.page
+            page: page
         }
         this.$store.dispatch("friendRequest/fetchFriendsList", data).then(
         (data) => {
-            for(let userReturnedInd in data){
+            this.totalFriends = data.totalFriends;
+            for(let userReturnedInd in data.users){
                 // var contains = false;
                 // for (let user in this.friendsList){
                 //     if (commentWD.commentDTO.id == commentWithData.commentDTO.id){
@@ -125,17 +128,15 @@ export default {
                 //         break;
                 //     }
                 // }
-                let userReturned = data[userReturnedInd];
+                let userReturned = data.users[userReturnedInd];
                 if (!this.friendsList.includes(userReturned)){
                     this.friendsList.push(userReturned);
                 }
             }
             // if backend return less than 4 elements for the page then
             // its last page
-            if (data.length < 21){
+            if (data.length < 21 || this.totalFriends == this.friendsList.length){
                 this.lastPage = true;
-            } else{
-                this.page += 1;
             }
             this.loading = false;
         },

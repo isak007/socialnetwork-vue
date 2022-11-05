@@ -10,13 +10,17 @@
                 style="width:70px;height:70px;border-radius:50%"
                 :src="this.displayPictureObject"/>
         </div>
-        <div>
-            <div><router-link :to="'/profile/'+this.user.username" style="color:#17a2b8;text-decoration:none">{{this.user.firstName}}&nbsp;{{this.user.lastName}}</router-link></div>
+        <div style="word-break:break-word;color:grey">
+            <div v-if="this.sessionUserId != this.user.is"><router-link :to="'/profile/'+this.user.username" style="color:#17a2b8;text-decoration:none;font-size:13px">{{this.user.firstName}}&nbsp;{{this.user.lastName}}</router-link></div>
+            <div v-else><router-link :to="'/my-profile'" style="color:#17a2b8;text-decoration:none;font-size:13px">{{this.user.firstName}}&nbsp;{{this.user.lastName}}</router-link></div>
             <div style="font-size:13px;color:grey;margin-bottom:3px">@{{this.user.username}}</div>
-            <div v-if="this.user.profileDescription == null || this.user.profileDescription.length < 50" style="font-size:11px">
-                {{this.user.profileDescription}}
+            <div v-if="this.user.profileDescription == null || this.user.profileDescription.length == 0" style="font-size:11px">
+                <i>No profile description</i>
             </div>
-            <div v-else style="font-size:11px">{{this.user.profileDescription.substring(0,50)}}...</div>
+            <div v-else-if="this.user.profileDescription.length < 50 && this.user.profileDescription.length > 0" style="font-size:11px">
+                <i>{{this.user.profileDescription}}</i>
+            </div>
+            <div v-else style="font-size:11px"><i>{{this.user.profileDescription.substring(0,50)}}...</i></div>
         </div>
     </div>
 </template>
@@ -31,6 +35,7 @@
         return {
           content: "",
           showFriends: false,
+          sessionUserId: this.$store.state.auth.user.userId,
           displayPictureObject: "",
         };
       },

@@ -28,6 +28,30 @@ class AuthService {
             return user;
           });
       }
+    passwordReset(passwordReset){
+        return axios.post(API_URL + 'password-reset', passwordReset,
+        {
+            headers: authHeader(),
+        })
+    }
+    prePasswordResetAuth(jwt){
+        return axios.get(API_URL + 'pre-password-reset-auth',
+        {
+            headers: authHeader(),
+            params: {
+                jwt: jwt
+            }
+        })
+    }
+    sendPasswordResetCode(email) {
+        return axios
+          .get(API_URL + 'send-password-reset-code',
+          { params: 
+            {
+                email:email
+            } 
+          });
+      }
 
   login(user) {
     return axios

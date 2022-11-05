@@ -30,6 +30,42 @@ export const auth = {
           }
         );
       },
+    passwordReset({ commit }, passwordReset) {
+        return AuthService.passwordReset(passwordReset).then(
+          response => {
+            commit('postSuccessful');
+            return Promise.resolve(response.data);
+          },
+          error => {
+            commit('postFailure');
+            return Promise.reject(error);
+          }
+        );
+    },
+    prePasswordResetAuth({ commit }, jwt) {
+        return AuthService.prePasswordResetAuth(jwt).then(
+          response => {
+            commit('getSuccessful');
+            return Promise.resolve(response.data);
+          },
+          error => {
+            commit('getFailure');
+            return Promise.reject(error);
+          }
+        );
+    },
+    sendPasswordResetCode({ commit }, email) {
+        return AuthService.sendPasswordResetCode(email).then(
+          response => {
+            commit('resetSuccess', response);
+            return Promise.resolve(response);
+          },
+          error => {
+            commit('resetFailure');
+            return Promise.reject(error);
+          }
+        );
+      },
     login({ commit }, user) {
       return AuthService.login(user).then(
         user => {

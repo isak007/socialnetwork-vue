@@ -21,6 +21,18 @@ export const comment = {
           }
         );
     },
+    fetchComment({ commit }, commentId) {
+        return CommentService.fetchComment(commentId).then(
+          response => {
+            commit('fetchSuccessfull');
+            return Promise.resolve(response.data);
+          },
+          error => {
+            commit('fetchFailure');
+            return Promise.reject(error);
+          }
+        );
+    },
     createComment({ commit }, comment) {
         return CommentService.createComment(comment).then(
           response => {

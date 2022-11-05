@@ -11,7 +11,9 @@
                     class="profile-img-card"/>
             </div>
             <div v-else>
-                <img id="profile-img" style="width:300px;height:300px;border-radius:50%;margin-bottom:15px;box-shadow: 0 0 10px;" class="profile-img-card" :src="this.displayPictureObject">
+                <img id="profile-img" :style="this.imgClicked ? imgClickedStyle : imgUnclickedStyle"
+                 class="profile-img-card" @click="this.imgClicked = !this.imgClicked" :src="this.displayPictureObject">
+                <!-- <img id="profile-img" style="width:300px;height:300px;border-radius:50%;margin-bottom:15px;box-shadow: 0 0 10px;" class="profile-img-card" :src="this.displayPictureObject"> -->
             </div>
 
             <div style="word-break: break-word;max-width:350px">
@@ -129,7 +131,7 @@
     </div>
 
     <FriendsList :key="refreshKey" v-if="!loading" style="width:100%;float:left;margin-top:20px" :userId="this.user.id"></FriendsList>
-    <PostsList :key="refreshKey" v-if="!loading" :userId="this.user.id"></PostsList>
+    <PostsList :key="refreshKey" v-if="!loading" :userId="this.user.id" :friendRequest="this.friendRequest"></PostsList>
 
   </div>
 </template>
@@ -149,6 +151,9 @@ import { ref } from 'vue';
             PostsList
         },
         data(){
+            console.log(this.$store.state.auth.user.username);
+            console.log(this.username);
+            if (this.$store.state.auth.user.username == this.username) this.$router.push("/my-profile");
             return {
                 username: this.$route.params.username,
                 sessionUserId: this.$store.state.auth.user.userId,
@@ -186,8 +191,39 @@ import { ref } from 'vue';
                     width:'130px',
                     cursor:'pointer'
                 },
-                refreshKey: ref(0)
+                refreshKey: ref(0),
+                imgClicked: false,
+                imgUnclickedStyle:{
+                    borderRadius:'50%',
+                    width:'300px',
+                    height:'300px',
+                    minWidth:'300px',
+                    minHeight:'300px',
+                    marginBottom:'15px',
+                    boxShadow: '0 0 10px',
+                    cursor:'pointer'
+                },
+                imgClickedStyle:{
+                    borderRadius:'5px',
+                    width:'300px',
+                    height:'300px',
+                    minWidth:'300px',
+                    minHeight:'300px',
+                    marginBottom:'15px',
+                    boxShadow: '0 0 10px',
+                    cursor:'pointer'
+                }
             }
+        },
+        created(){
+            this.getUserData(this.username);
+            this.$watch(
+                () => this.$route.params,
+                (toParams, previousParams) => {
+                    if (this.$store.state.auth.user.username == toParams.username) this.$router.push("/my-profile");
+                    this.getUserData(toParams.username);
+                }
+            )
         },
         methods: {
             checkFriendRequest() {
@@ -231,9 +267,11 @@ import { ref } from 'vue';
                 this.updatingFriendRequest = true;
                 this.$store.dispatch("friendRequest/removeFriend", this.friendRequest.id).then(
                     (data) => {
+                        this.$root.onRemoveFriend();
                         this.friendRequest = '';
                         this.updatingFriendRequest = false;
                         this.refreshKey+=1;
+                        // console.log(this.$root);
                     },
                     (error) => {
                         this.updatingFriendRequest = false;
@@ -284,22 +322,14 @@ import { ref } from 'vue';
                 }
               );
           },
-
-        },
-        created(){
-            if (this.$store.state.auth.user.username == this.username) this.$router.push("/my-profile");
-            this.getUserData(this.username);
-            this.$watch(
-                () => this.$route.params,
-                (toParams, previousParams) => {
-                    this.getUserData(toParams.username);
-                }
-            )
         },
     }
 </script>
 
 <style scoped>
+    #profile-img:hover{
+        opacity:0.9
+    }
 
     #friendRequestImg{
         opacity:1

@@ -11,7 +11,8 @@
                     class="profile-img-card"/>
             </div>
             <div v-else>
-                <img id="profile-img" style="width:300px;height:300px;border-radius:50%;margin-bottom:15px;box-shadow: 0 0 10px;" class="profile-img-card" :src="this.displayPictureObject">
+                <img id="profile-img" :style="this.imgClicked ? imgClickedStyle : imgUnclickedStyle"
+                 class="profile-img-card" @click="this.imgClicked = !this.imgClicked" :src="this.displayPictureObject">
             </div>
             
             <my-upload
@@ -196,8 +197,18 @@
                                 @onFocus="onFocusEventHandler"
                                 @onBlur="(event) => onBlurCityHandler(event)">
                                 <template #list-item-text="slot">
-                                    <span><img src="../assets/location_tag.png"></span>&nbsp;
-                                    <span v-html="slot.boldMatchText(slot.itemProjection(slot.item))"></span>
+                                    <div v-if="!this.loadingCities">
+                                        <span><img src="../assets/location_tag.png"></span>&nbsp;
+                                        <span v-html="slot.boldMatchText(slot.itemProjection(slot.item))"></span>
+                                    </div>
+                                    <div v-else style="text-align:center">
+                                        <Button style="color:#17a2b8;text-decoration:none" class="btn btn-link btn-sm" :disabled="this.loadingCities">
+                                            <span
+                                                v-show="this.loadingCities"
+                                                class="spinner-border spinner-border-sm"
+                                            ></span>
+                                        </Button>
+                                    </div>
                                 </template>
                             </vue3-simple-typeahead>
                             <div class="error-feedback" > {{this.cityError}} </div>
@@ -376,13 +387,29 @@ import PostsList from './PostsList.vue';
                 emailCodeErr: "",
                 maxDate,
                 minDate,
-                params: {
-                    token: '123456798',
-                    name: 'avatar'
+                imgClicked: false,
+                imgUnclickedStyle:{
+                    borderRadius:'50%',
+                    width:'300px',
+                    height:'300px',
+                    minWidth:'300px',
+                    minHeight:'300px',
+                    marginBottom:'15px',
+                    boxShadow: '0 0 10px',
+                    cursor:'pointer'
                 },
-                headers: {
-                    smail: '*_~'
-                },            }
+                imgClickedStyle:{
+                    borderRadius:'5px',
+                    width:'300px',
+                    height:'300px',
+                    minWidth:'300px',
+                    minHeight:'300px',
+                    marginBottom:'15px',
+                    boxShadow: '0 0 10px',
+                    cursor:'pointer'
+                },
+                loadingCities:false,
+            }
         },
 
         methods: {
@@ -458,6 +485,9 @@ import PostsList from './PostsList.vue';
                     return;
                 }
                 const queryString = e.input;
+                this.cityList = [];
+                this.cityList.push(queryString);
+                this.loadingCities = true;
                 this.$store.dispatch("user/fetchCityList", queryString).then(
                     (data) => {
                         this.cityList = [];
@@ -467,22 +497,17 @@ import PostsList from './PostsList.vue';
                                 !result.address.countryCode){
                                 continue
                             }
-                            console.log(result)
                             this.cityList.push((result.address.postalCode!=null ? result.address.postalCode +" " : "") +
                                 result.address.city+", "+
                                 result.address.countryName+" "+
                                 result.address.countryCode)
                         }
+                        this.loadingCities = false;
 
                     },
                     (error) => {
-                        console.log(
-                            (error.response &&
-                            error.response.data &&
-                            error.response.data.message) ||
-                            error.message ||
-                            error.toString()
-                        )}
+                        console.log(error);
+                    }
                 );
             },
 
@@ -673,6 +698,10 @@ import PostsList from './PostsList.vue';
 </script>
 
 <style scoped>
+
+  #profile-img:hover{
+    opacity:0.9
+  }
 
   div#typeahead_id_wrapper.simple-typeahead :focus{
     color: #495057!important;

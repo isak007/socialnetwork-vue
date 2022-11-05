@@ -21,6 +21,18 @@ export const user = {
         }
       );
     },
+    fetchNewPlacesToken({ commit }) {
+        return UserService.fetchNewPlacesToken().then(
+          token => {
+            commit('fetchSuccess', token);
+            return Promise.resolve(token);
+          },
+          error => {
+            commit('fetchError');
+            return Promise.reject(error);
+          }
+        );
+      },
     getUserDataByUsername({ commit }, username) {
         return UserService.getUserDataByUsername(username).then(
           user => {
@@ -72,15 +84,27 @@ export const user = {
     fetchCityList({ commit }, queryString) {
         return UserService.fetchCityList(queryString).then(
           response => {
-            commit('fetchSuccessfull');
+            // commit('fetchSuccessfull');
             return Promise.resolve(response.data);
           },
           error => {
-            commit('fetchFailure');
+            // commit('fetchFailure');
             return Promise.reject(error);
           }
         );
     },
+    // fetchCityList({ commit }, data) {
+    //     return UserService.fetchCityList(data).then(
+    //       response => {
+    //         // commit('fetchSuccessfull');
+    //         return Promise.resolve(response.data);
+    //       },
+    //       error => {
+    //         // commit('fetchFailure');
+    //         return Promise.reject(error);
+    //       }
+    //     );
+    // },
     searchUsers({ commit }, data) {
         return UserService.searchUsers(data).then(
           response => {

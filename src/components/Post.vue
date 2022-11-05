@@ -53,7 +53,6 @@
 
         </div>
 
-        
         <div id="postPicture">
             <img v-if="!this.displayPostPictureObject"
                 style="width:fit-content;max-height:500px"
@@ -65,8 +64,9 @@
                 :src="this.displayPostPictureObject"/>
         </div>
 
-
-        
+        <!-- <video :ref="refreshKey" controls style="width:fit-content">
+            <source type="video/webm" :src="this.displayVideo">
+        </video> -->
 
         <div style="margin-bottom:15px;margin-left:5px;float:left;width:100%">
             <VTooltip theme="tooltip" style="margin-right:5px;float:right;color:grey">
@@ -228,7 +228,9 @@ import { ref } from 'vue';
           postLikesPage: 1, // because first page is loaded with post
           scrolledBottom: false,
           lastPageLikes: this.postWithData.totalLikes <= 15 ? true : false, // bcs there are 15 likes per page
-          refreshKey: ref(0)
+          refreshKey: ref(0),
+          displayVideo:'',
+          timer:'',
         };
       },
       created(){
@@ -243,6 +245,9 @@ import { ref } from 'vue';
         // for (let i=0; i<20;i++){
         //     this.postLikes.push(this.postLikes[0]);
         // }
+      },
+      unmounted(){
+        clearTimeout(this.timer);
       },
       methods: {
         likesClicked(){
@@ -279,7 +284,7 @@ import { ref } from 'vue';
             window.onscroll = function() {};
         },
         setRefreshable(){
-            window.setInterval( () => {
+            this.timer=window.setInterval( () => {
                 this.refreshPostTimeAndLikes()
             }, 60000);
         },
@@ -532,11 +537,23 @@ import { ref } from 'vue';
         fetchPostPicture() {
             this.$store.dispatch("user/fetchPostPicture",this.post.id).then(
                 (data) => {
-                    console.log(data.data);
-                    const imageBlob = new Blob([data.data])
+                    // this.displayVideo =  btoa(String.fromCharCode.apply(null, new Uint8Array(data)));
+                    // var fileData = data.data.toString().split(",")[1];
+                    // var reader = new FileReader();
+                    // reader.readAsDataURL(data.data); 
+                    // reader.onloadend = function() {
+                    //     var base64data = reader.result;
+                    //     this.displayVideo = base64data;
+                    //     this.refreshKey+=1;
+                    //     console.log(this.displayVideo);
+                    // }
+
+                    const imageBlob = new Blob([data.data]);
                     const imageObjectURL = URL.createObjectURL(imageBlob);
                     URL.revokeObjectURL(this.imageBlob)
                     this.displayPostPictureObject = imageObjectURL;
+                    console.log(imageBlob);
+                    console.log(imageObjectURL);
                 },
                 (error) => {
                     console.log(error);

@@ -3,13 +3,18 @@ import authHeader from './auth-header';
 
 const USERS_API_BASE_URL = 'http://localhost:5000/social-network/comments';
 
-class LikeService{
+class CommentService{
     fetchCommentsList(commentsData){
         return axios.get(USERS_API_BASE_URL+"/post/"+commentsData.postId,{
             headers: authHeader(),
             params:{
                 page:commentsData.page
             }
+        })
+    }
+    fetchComment(commentId){
+        return axios.get(USERS_API_BASE_URL+"/"+commentId,{
+            headers: authHeader(),
         })
     }
     createComment(comment){
@@ -30,4 +35,4 @@ class LikeService{
     }
 }
 
-export default new LikeService()
+export default new CommentService()

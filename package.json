@@ -26,6 +26,7 @@
     "vue-dropdowns": "^1.1.2",
     "vue-image-crop-upload": "^3.0.3",
     "vue-router": "^4.1.5",
+    "vue-sidebar-menu": "^5.2.4",
     "vue-swatches": "^2.1.1",
     "vue3-perfect-scrollbar": "^1.6.0",
     "vue3-simple-typeahead": "^1.0.11",

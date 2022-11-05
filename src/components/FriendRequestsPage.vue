@@ -1,5 +1,5 @@
 <template>
-    <div style="margin-top:10px;display:flex;justify-content:center">
+    <div style="margin-top:10px;display:flex;justify-content:center;padding-top:5px">
         <div :style="showPending ? pressedButtonStyle : null">
             <Button @click="this.showPending = true;this.friendRequestsWithData = [];this.fetchPendingRequests()"  class="btn btn-none" >
                 Pending ({{this.totalPendingFriendRequests}})
@@ -39,7 +39,7 @@
             </div>       
         </div>
 
-        <div v-if="!this.showPending" :style="(this.friendRequestsWithData.length % 2 == 0 && this.friendRequestsWithData.length != 0) || this.friendRequestsWithData.length >= 10
+        <div v-if="!this.showPending" :style="(this.friendRequestsWithData.length % 2 == 0 && this.friendRequestsWithData.length != 0) || this.friendRequestsWithData.length > 7
             ? otherRequestsStyle : otherRequestsStyleFitContent">
             <div v-if="this.friendRequestsWithData.length > 0">
                     <perfect-scrollbar @mouseenter="this.disableScrollable" @mouseleave="this.enableScrollable"
