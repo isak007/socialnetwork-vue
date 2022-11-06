@@ -177,7 +177,7 @@
 <script>
 import { Form, Field, ErrorMessage } from "vee-validate";
 import * as yup from "yup";
-import 'babel-polyfill'; // es6 shim
+import 'babel-polyfill';
 import myUpload from 'vue-image-crop-upload';
 
 export default {
@@ -344,11 +344,9 @@ export default {
         this.show = !this.show;
     },
     cropSuccess(imgDataUrl, field){
-        console.log('-------- picture cropped and saved --------');
         this.newPictureObject = imgDataUrl;
     },
     onPictureChange(fileName, fileType, fileSize){
-        console.log('-------- picture changed --------');
         this.newPictureName = fileName;
     },
 
@@ -417,12 +415,6 @@ export default {
   .form-group{
     width:300px
   }
-
-  /* .form-group :focus{
-    border-color:rgb(206, 212, 218);
-    color: none;
-    outline:0;
-  } */
 
   .error-feedback{
     margin-left:5px;

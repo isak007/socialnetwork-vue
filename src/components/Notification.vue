@@ -6,13 +6,9 @@
         </div>
 
         <div style="vertical-align:middle; cursor:pointer" @click="this.notification.objectType=='FRIEND_REQUEST' ? this.goToProfile() : this.goToPost()">
-            <!-- <div v-if="this.notification.seen" style="color:grey;float:right;font-size:10px;display:inline-block">{{this.notificationTime}}</div> -->
-
             <div v-if="notification.objectType=='POST' || (notification.objectType == 'COMMENT' && notification.activityType=='Commented on a post')" 
             style="margin-right:10px;display:inline-block">
                 <img :src="postImageContainer" style="height:75px;border:radius:5px;cursor:pointer">
-                <!-- <img v-if="this.postImageContainer" :src="postImageContainer" style="height:75px;border:radius:5px;cursor:pointer" @click="this.goToProfile">
-                <img v-else :src="profileImageContainer" style="height:75px;width:75px;border-radius:50%;cursor:pointer" @click="this.goToProfile"> -->
             </div>
 
             <div v-else-if="notification.objectType=='FRIEND_REQUEST' || (notification.objectType == 'COMMENT' && notification.activityType=='Liked comment')" 
@@ -93,7 +89,6 @@ export default {
         },
         refreshNotificationTime(){
             this.notificationTime = this.calculateTime(this.notification.dateCreated);
-            // console.log(this.notificationTime);
         },
         calculateTime(dateCreated){
             var startTime = new Date(dateCreated); 
@@ -179,11 +174,7 @@ export default {
                 (data) => {
                     const imageBlob = new Blob([data.data])
                     const imageObjectURL = URL.createObjectURL(imageBlob);
-                    console.log(imageObjectURL);
                     this.profileImageContainer = imageObjectURL;
-                    // URL.revokeObjectURL(this.imageBlob)
-                    // this.currentPictureObject = imageObjectURL;
-                    // this.displayPictureObject = imageObjectURL;
                 },
                 (error) => {
                     console.log(error);
@@ -197,8 +188,6 @@ export default {
                     const imageObjectURL = URL.createObjectURL(imageBlob);
                     URL.revokeObjectURL(this.imageBlob)
                     this.postImageContainer = imageObjectURL;
-                    console.log(imageBlob);
-                    console.log(imageObjectURL);
                 },
                 (error) => {
                     console.log(error);
@@ -252,7 +241,6 @@ export default {
 
     <style>
         #notification{
-            /* float:center; */
             width:400px;
             height:133px;
             margin:5px;

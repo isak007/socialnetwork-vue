@@ -86,7 +86,6 @@ export default {
         },
         refreshDisplayDate(){
             this.displayDate = this.calculateTime(this.friendRequest.dateCreated);
-            // console.log(this.notificationTime);
         },
         calculateTime(dateCreated){
             var startTime = new Date(dateCreated); 
@@ -184,11 +183,7 @@ export default {
                 (data) => {
                     const imageBlob = new Blob([data.data])
                     const imageObjectURL = URL.createObjectURL(imageBlob);
-                    console.log(imageObjectURL);
                     this.imageContainer = imageObjectURL;
-                    // URL.revokeObjectURL(this.imageBlob)
-                    // this.currentPictureObject = imageObjectURL;
-                    // this.displayPictureObject = imageObjectURL;
                 },
                 (error) => {
                     console.log(error);
@@ -198,21 +193,19 @@ export default {
     }
 }
 </script>
-
-    <style>
-        #userFriendRequest{
-            /* float:center; */
-            width:400px;
-            height:100px;
-            margin:10px;
-            padding:10px;
-            background-color:#ffffff;
-            border-radius:10px;
-            border-top-left-radius: 5px;
-            border-bottom-left-radius: 5px;
-            box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
-            word-break: break-word;
-            overflow:hidden;
-            float:left;
-        }
-    </style>
+<style>
+    #userFriendRequest{
+        width:400px;
+        height:100px;
+        margin:10px;
+        padding:10px;
+        background-color:#ffffff;
+        border-radius:10px;
+        border-top-left-radius: 5px;
+        border-bottom-left-radius: 5px;
+        box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+        word-break: break-word;
+        overflow:hidden;
+        float:left;
+    }
+</style>

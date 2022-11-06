@@ -120,13 +120,6 @@
                 </div>
             </div>
         </Form>
-
-        <!-- <div v-if="this.user.profileDescription" style="float:left;padding:10px;border-radius:5px; width:fit-content; text-align:center; margin-top:10px;
-        box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;">
-            <div style="word-break: break-word">{{this.user.profileDescription}}</div>
-        </div> -->
-
-
       </div>
     </div>
 
@@ -138,7 +131,7 @@
 
 <script>
 import { Form, Field, ErrorMessage } from "vee-validate";
-import 'babel-polyfill'; // es6 shim
+import 'babel-polyfill';
 import FriendsList from './FriendsList.vue';
 import PostsList from './PostsList.vue';
 import { ref } from 'vue';
@@ -187,7 +180,6 @@ import { ref } from 'vue';
                     cursor:'pointer'
                 },
                 addFriendStyle: {
-                    // float:'left',
                     width:'130px',
                     cursor:'pointer'
                 },
@@ -271,7 +263,6 @@ import { ref } from 'vue';
                         this.friendRequest = '';
                         this.updatingFriendRequest = false;
                         this.refreshKey+=1;
-                        // console.log(this.$root);
                     },
                     (error) => {
                         this.updatingFriendRequest = false;
@@ -301,7 +292,6 @@ import { ref } from 'vue';
               this.loading=true;
               this.$store.dispatch("user/getUserDataByUsername", username).then(
                 (data) => {
-                    console.log(data.data);
                     this.user = data.data;
                     this.selectedCity = this.user.city;
                     if (this.user.profilePicture != null && this.user.profilePicture != ""){
@@ -388,10 +378,7 @@ import { ref } from 'vue';
   .button{
     height: 38px;
   }
-
-  /* ovamo nista ne mijenja al kao podsjetnik */
-  /* da sam dodao ovo u node_modules/vue-image-crop-upload/upload.css fajl */
-  /* da se slika ne bi rastezala kad se zoomira */
+  
   .vicp-img{
     max-width:unset!important;
   }

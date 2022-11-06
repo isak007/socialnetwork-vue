@@ -12,11 +12,9 @@ export const post = {
     fetchPostsList({ commit }, postsData) {
         return PostService.fetchPostsList(postsData).then(
           response => {
-            commit('fetchSuccessfull');
             return Promise.resolve(response.data);
           },
           error => {
-            commit('fetchFailure');
             return Promise.reject(error);
           }
         );
@@ -24,11 +22,9 @@ export const post = {
     fetchPost({ commit }, postId) {
         return PostService.fetchPost(postId).then(
           response => {
-            commit('fetchSuccessfull');
             return Promise.resolve(response.data);
           },
           error => {
-            commit('fetchFailure');
             return Promise.reject(error);
           }
         );
@@ -36,11 +32,9 @@ export const post = {
     fetchMainPagePostsList({ commit }, page) {
         return PostService.fetchMainPagePostsList(page).then(
           response => {
-            commit('fetchSuccessfull');
             return Promise.resolve(response.data);
           },
           error => {
-            commit('fetchFailure');
             return Promise.reject(error);
           }
         );
@@ -48,11 +42,9 @@ export const post = {
     createPost({ commit }, post) {
         return PostService.createPost(post).then(
           response => {
-            commit('postSuccessful');
             return Promise.resolve(response.data);
           },
           error => {
-            commit('postFailure');
             return Promise.reject(error);
           }
         );
@@ -60,11 +52,9 @@ export const post = {
     editPost({ commit }, post) {
         return PostService.editPost(post).then(
           response => {
-            commit('editSuccessful');
             return Promise.resolve(response.data);
           },
           error => {
-            commit('editFailure');
             return Promise.reject(error);
           }
         );
@@ -72,11 +62,9 @@ export const post = {
     deletePost({ commit }, postId) {
         return PostService.deletePost(postId).then(
           response => {
-            commit('deleteSuccessful');
             return Promise.resolve(response);
           },
           error => {
-            commit('deleteFailure');
             return Promise.reject(error);
           }
         );

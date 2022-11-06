@@ -35,7 +35,7 @@ const routes = [
     component: PostPage,
   },
   {
-    path: "/password-reset/:jwt", //:passwordResetData(.*)"
+    path: "/password-reset/:jwt",
     name: "password-reset",
     component: PasswordReset,
     props: true,
@@ -55,27 +55,23 @@ const routes = [
   {
     path: "/my-profile",
     name: "my-profile",
-    // lazy-loaded
     component: MyProfile,
   },
   {
     path: "/friend-requests",
     name: "friend-requests",
     props: true,
-    // lazy-loaded
     component: FriendRequestsPage,
   },
   {
     path: "/profile/:username",
     name: "profile",
-    // lazy-loaded
     component: UserProfile,
   },
   {
     path: "/search/:searchTerm",
     name: "search",
     props: true,
-    // lazy-loaded
     component: SearchPage,
   },
 ];
@@ -92,7 +88,6 @@ router.beforeEach((to, from, next) => {
   
     // trying to access a restricted page + not logged in
     // redirect to login page
-    console.log(to.path);
     if (to.path.startsWith("/account-confirmation/") && !loggedIn){
         next();
     }

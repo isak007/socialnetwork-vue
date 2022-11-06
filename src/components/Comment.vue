@@ -68,8 +68,6 @@
 
         <div style="width:100%;float:left">
             <span style="color:grey;float:left" v-if="this.likes.length > 0" :key="refreshKey">
-                <!-- <a v-if="this.likes.length == 1">{{this.likes.length}} like</a>
-                <span v-if="this.likes.length > 1">{{this.likes.length}} likes</span> -->
                     <VMenu :triggers="['click']" :hideTriggers="['click']">
                         <button @click="this.likesClicked" v-if="this.totalLikes == 1" style="color:grey;text-decoration:none" class="btn btn-link btn-sm">
                             {{this.totalLikes}} like
@@ -114,7 +112,6 @@
                         </template>
                     </VMenu>
             </span>
-            <!-- <span v-if="this.totalLikes > 0" style="margin-top:3px;float:left">&middot;</span> -->
             <span style="margin-top:3px;float:left">
                 <a style="color:#17a2b8;text-decoration:none" v-if="this.liked" @click="this.deleteLike" :disabled="this.editing || this.deleting || this.likingDisliking">Dislike</a>
                 <a style="color:#17a2b8;text-decoration:none;margin-left:5px" v-else @click="this.createLike" :disabled="this.editing || this.deleting || this.likingDisliking">Like</a>
@@ -395,7 +392,6 @@ import { ref } from 'vue';
         fetchProfilePicture() {
             this.$store.dispatch("user/fetchProfilePicture",this.user.id).then(
                 (data) => {
-                    console.log(data.data);
                     const imageBlob = new Blob([data.data])
                     const imageObjectURL = URL.createObjectURL(imageBlob);
                     URL.revokeObjectURL(this.imageBlob)

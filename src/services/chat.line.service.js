@@ -25,18 +25,6 @@ class ChatLineService{
         return axios.post(USERS_API_BASE_URL, chatLine,
             { headers: authHeader()});
     }
-    // editComment(comment){
-    //     return axios.put(USERS_API_BASE_URL, comment,
-    //     {
-    //         headers: authHeader(),
-    //     })
-    // }
-    // deleteComment(commentId){
-    //     return axios.delete(USERS_API_BASE_URL+"/"+commentId,
-    //         { 
-    //             headers: authHeader(),
-    //         });
-    // }
 }
 
 export default new ChatLineService()

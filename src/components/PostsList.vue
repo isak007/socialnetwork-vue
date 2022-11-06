@@ -85,7 +85,6 @@
 
 <script>
 import Post from './Post.vue';
-import { ref } from 'vue';
 export default {
   name: "PostsList",
   components: {
@@ -130,10 +129,6 @@ export default {
             }
         }
     },
-    // forceRerender(){
-    //     this.refreshKey += 1;
-    // },
-    // for specific case when user clicks 'Load more posts...'
     loadMorePosts(){
         if (this.$route.name =="profile") this.loadPosts();
         else this.loadMainPagePosts();
@@ -175,9 +170,6 @@ export default {
                 if (data.postsWithDataDTO.length < 3 || this.postsList.length == this.totalPosts){
                     this.lastPage = true;
                 } 
-                // else{
-                //     this.page += 1;
-                // }
                 this.loading = false;
             },
             (error) => {
@@ -216,11 +208,7 @@ export default {
                 if (data.postsWithDataDTO.length < 3 || this.postsList.length == this.totalPosts){
                     this.lastPage = true;
                 } 
-                // else{
-                //     this.page += 1;
-                // }
                 this.loading = false;
-                console.log(this.postsList);
             },
             (error) => {
                 this.error = error;
@@ -236,12 +224,10 @@ export default {
             const files = e.target.files
             if (!files.length) return
             this.newPictureName= e.target.files[0].name;
-            console.log(this.newPictureName)
             const reader = new FileReader()
             reader.readAsDataURL(files[0])
             reader.onload = () => (this.newPictureObject = reader.result)
             this.canCreate = true;
-
         }
     },
     toggleCreatable(){
@@ -266,7 +252,6 @@ export default {
                 this.totalPosts += 1;
                 this.toggleCreatable();
                 this.creatingPost = false;
-                //this.forceRerender();
             },
             (error) => {
                 this.message =
@@ -321,17 +306,4 @@ export default {
         background-color:white;
         box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
     }
-
-    /* #post{
-        margin-bottom:40px;
-        padding-top:30px;
-        padding-left:50px;
-        padding-right:50px;
-        padding-bottom:30px;
-        border-radius:20px;
-        float:left;
-        width:100%;
-        background-color:white;
-        box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
-    } */
 </style>

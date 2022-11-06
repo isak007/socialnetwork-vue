@@ -65,28 +65,6 @@
             </div>           
         </div>
     </div>
-
-  <!-- <div >
-    <div v-if="!loadingFriendRequests" :style="this.showPending ? pendingRequestsStyle : otherRequestsStyle"
-        >
-            <div v-for="(frWithData) in this.friendRequestsWithData" :key="frWithData">
-                <UserFriendRequest :frWithData='frWithData' @update-request="onUpdateRequest"/>
-                <UserFriendRequest :frWithData='frWithData' @update-request="onUpdateRequest"/>
-                <UserFriendRequest :frWithData='frWithData' @update-request="onUpdateRequest"/>
-                <UserFriendRequest :frWithData='frWithData' @update-request="onUpdateRequest"/>
-                <UserFriendRequest :frWithData='frWithData' @update-request="onUpdateRequest"/>
-                <UserFriendRequest :frWithData='frWithData' @update-request="onUpdateRequest"/>
-                
-            </div>
-            <div v-if="this.loadingMoreFriendRequests" style="text-align:center;margin-bottom:20px">
-                <span
-                    v-show="this.loadingMoreFriendRequests"
-                    class="spinner-border spinner-border-sm"
-                ></span>
-                <h3>Loading requests...</h3>
-            </div>
-    </div>
-  </div> -->
 </template>
 
 <script>
@@ -115,20 +93,15 @@ export default {
                 backgroundColor:'white',
                 borderRadius:'5px',
                 boxShadow: 'rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px'
-                // borderTopRightRadius:'0',
-                // borderBottomRightRadius:'0'
             },
             pendingRequestsStyle: {
                 marginTop:'10px',
                 float:'left',
                 width:'840px',
-                // width:'fit-content',
                 marginBottom:'10px',
-                // display:'flex',
                 backgroundColor:'white',
                 borderRadius:'10px',
                 boxShadow: 'rgba(0, 0, 0, 0.16) 0px 1px 4px',
-                // borderTopLeftRadius:'0'
             },
             pendingRequestsStyleFitContent: {
                 marginTop:'10px',
@@ -136,23 +109,18 @@ export default {
                 maxWidth:'840px',
                 width:'fit-content',
                 marginBottom:'10px',
-                // display:'flex',
                 backgroundColor:'white',
                 borderRadius:'10px',
                 boxShadow: 'rgba(0, 0, 0, 0.16) 0px 1px 4px',
-                // borderTopLeftRadius:'0'
             },
             otherRequestsStyle: {
                 marginTop:'10px',
                 float:'left',
                 width:'840px',
-                // width:'fit-content',
                 marginBottom:'10px',
-                // display:'flex',
                 backgroundColor:'white',
                 borderRadius:'10px',
                 boxShadow: 'rgba(0, 0, 0, 0.16) 0px 1px 4px',
-                // borderTopLeftRadius:'10px'
             },
             otherRequestsStyleFitContent: {
                 marginTop:'10px',
@@ -160,11 +128,9 @@ export default {
                 maxWidth:'840px',
                 width:'fit-content',
                 marginBottom:'10px',
-                // display:'flex',
                 backgroundColor:'white',
                 borderRadius:'10px',
                 boxShadow: 'rgba(0, 0, 0, 0.16) 0px 1px 4px',
-                // borderTopLeftRadius:'10px'
             },
             showPending:true,
         }
@@ -178,13 +144,6 @@ export default {
         },
         scrollEndHandle(){
             this.scrolledBottom = true;
-            // window.onscroll = () => {
-            //     if ((window.innerHeight + window.scrollY) >= document.body.scrollHeight) {
-            //         if(!this.loadingFriendRequests && !this.lastPage){
-            //             this.fetchPendingRequests();
-            //         }
-            //     }
-            // };
         },
         disableScrollable(){
             // dont disable if there is not enough comments for scrolling
@@ -206,7 +165,6 @@ export default {
                 var friendRequestWithData = this.$root.$data.friendRequestsWithData[requestInd];
                 if (friendRequestWithData.friendRequestDTO.id == friendRequestChanged.id){
                     this.$root.$data.friendRequestsWithData[requestInd].friendRequestDTO = friendRequestChanged;
-                    // this.friendRequestsWithData.splice(requestInd,1);
                     break;
                 }
             }
@@ -214,7 +172,6 @@ export default {
             this.totalPendingFriendRequests -= 1;
             
             this.$root.$data.totalPendingFriendRequests -= 1;
-            // this.$root.$data.friendRequestsWithData = this.friendRequestsWithData;
         },
         
         fetchPendingRequests(){
@@ -295,21 +252,6 @@ export default {
   .btn:focus{
     box-shadow: none;
   }
-
-  /* #header{
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
-    border-bottom-left-radius: 15px;
-    border-bottom-right-radius: 15px;
-    padding-top:30px;
-    padding-left:50px;
-    padding-right:50px;
-    padding-bottom:30px;
-    float:left;
-    width:100%;
-    background-color: rgb(255, 255, 255);
-    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
-  } */
 
   .container{
     padding:10px;

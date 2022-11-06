@@ -46,9 +46,6 @@
                         <textarea style="resize:none;scroll:none;height:90px" maxlength="100" @keyup="this.descriptionHandler(field.value)" v-bind="field" class="form-control" autocomplete="off"/>
                     </Field>
                 </div>
-                <!-- <div v-if="!this.editable && this.user.profileDescription">
-                    <div style="word-break: break-word">{{this.user.profileDescription}}</div>
-                </div> -->
                 <div v-if="!this.editable && this.user.profileDescription" style="padding:10px;border-radius:5px; margin-top:10px; border:none;
                 box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;">
                     <div style="word-break: break-word">{{this.user.profileDescription}}</div>
@@ -287,7 +284,7 @@
 <script>
 import { Form, Field, ErrorMessage } from "vee-validate";
 import * as yup from "yup";
-import 'babel-polyfill'; // es6 shim
+import 'babel-polyfill';
 import myUpload from 'vue-image-crop-upload';
 import FriendsList from './FriendsList.vue';
 import PostsList from './PostsList.vue';
@@ -462,7 +459,6 @@ import PostsList from './PostsList.vue';
             },
 
             onBlurCityHandler(e){
-                console.log(e.input);
                 if (e.input == ""){
                     this.cityError = "";
                     this.selectedCity = "";
@@ -518,24 +514,13 @@ import PostsList from './PostsList.vue';
 				console.log('-------- picture cropped and saved --------');
 
                 const convertBase64ToBlob = (base64Image) => {
-                    // Split into two parts
                     const parts = base64Image.split(';base64,');
-
-                    // Hold the content type
                     const imageType = parts[0].split(':')[1];
-
-                    // Decode Base64 string
                     const decodedData = window.atob(parts[1]);
-
-                    // Create UNIT8ARRAY of size same as row data length
                     const uInt8Array = new Uint8Array(decodedData.length);
-
-                    // Insert all character code into uInt8Array
                     for (let i = 0; i < decodedData.length; ++i) {
                         uInt8Array[i] = decodedData.charCodeAt(i);
                     }
-
-                    // Return BLOB image after conversion
                     return new Blob([uInt8Array], { type: imageType });
                 }
 
@@ -544,14 +529,12 @@ import PostsList from './PostsList.vue';
                 this.newPictureObject = imgDataUrl;
 			},
             onPictureChange(fileName, fileType, fileSize){
-                console.log('-------- picture changed --------');
                 this.newPictureName = fileName;
             },
 
           fetchProfilePicture() {
             this.$store.dispatch("user/fetchProfilePicture", this.user.id).then(
                 (data) => {
-                    console.log(data.data);
                     const imageBlob = new Blob([data.data])
                     const imageObjectURL = URL.createObjectURL(imageBlob);
                     URL.revokeObjectURL(this.imageBlob)
@@ -623,14 +606,11 @@ import PostsList from './PostsList.vue';
             }
             userData.city = this.selectedCity;
             userData.profileDescription = this.newDescription;
-            console.log(this.newDescription);
 
             this.message = "";
             this.successful = false;
             this.loading = true;
 
-
-            console.log(this.newPictureObject);
             // send photo if user has updated the photo
             if (this.newPictureObject != null && this.newPictureObject != ""){
                 this.currentPictureObject = this.displayPictureObject;
@@ -753,9 +733,7 @@ import PostsList from './PostsList.vue';
     height: 38px;
   }
 
-  /* ovamo nista ne mijenja al kao podsjetnik */
-  /* da sam dodao ovo u node_modules/vue-image-crop-upload/upload.css fajl */
-  /* da se slika ne bi rastezala kad se zoomira */
+  /* the style from below goes in node_modules/vue-image-crop-upload/upload.css file to fix stretching bug */
   .vicp-img{
     max-width:unset!important;
   }

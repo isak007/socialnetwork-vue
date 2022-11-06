@@ -43,9 +43,6 @@
                 const imageObjectURL = URL.createObjectURL(imageBlob);
                 console.log(imageObjectURL);
                 this.imageContainer = imageObjectURL;
-                // URL.revokeObjectURL(this.imageBlob)
-                // this.currentPictureObject = imageObjectURL;
-                // this.displayPictureObject = imageObjectURL;
             },
             (error) => {
                 console.log(error);
@@ -57,6 +54,3 @@
       }
     };
     </script>
-
-    <style>
-    </style>

@@ -12,11 +12,9 @@ export const commentLike = {
     fetchCommentLikes({ commit }, data) {
         return LikeService.fetchCommentLikes(data).then(
           response => {
-            commit('fetchSuccessfull');
             return Promise.resolve(response.data);
           },
           error => {
-            commit('fetchFailure');
             return Promise.reject(error);
           }
         );
@@ -24,11 +22,9 @@ export const commentLike = {
     createLike({ commit }, likeData) {
         return LikeService.createLike(likeData).then(
           response => {
-            commit('postSuccessfull');
             return Promise.resolve(response.data);
           },
           error => {
-            commit('postFailure');
             return Promise.reject(error);
           }
         );
@@ -36,11 +32,9 @@ export const commentLike = {
     deleteLike({ commit }, likeData) {
         return LikeService.deleteLike(likeData).then(
           response => {
-            commit('deleteSuccessfull');
             return Promise.resolve(response.data);
           },
           error => {
-            commit('deleteFailure');
             return Promise.reject(error);
           }
         );

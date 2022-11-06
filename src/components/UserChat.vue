@@ -13,7 +13,7 @@
 
         <span style="word-break:break-word;color:grey;display:inline-block;width:74%">
             <div style="display:inline-block;vertical-align:middle;width:fit-content">
-                <div style="color:#17a2b8;text-decoration:none;font-size:13px">{{this.user.firstName}}&nbsp;{{this.user.lastName}}</div>
+                <div style="color:#5DA7DB;text-decoration:none;font-size:13px">{{this.user.firstName}}&nbsp;{{this.user.lastName}}</div>
                 <div style="font-size:12px;color:grey">@{{this.user.username}}</div>
                 <div style="font-size:11px;color:grey">
                     <span v-if="this.lastChatLine.userId == this.sessionUserId">You: {{this.displayLastChatLine}}</span>
@@ -85,9 +85,6 @@
                     this.fetchLastChatLine(type);
                 },
                 (error) => {
-                    // if (error.response.status=='404'){
-                    //     this.createChat();
-                    // }
                     console.log(error);
                 }
               );
@@ -106,9 +103,6 @@
                     if (type=="init") this.setRefreshable();
                 },
                 (error) => {
-                    // if (error.response.status=='404'){
-                    //     this.createChat();
-                    // }
                     console.log(error);
                 }
               );
@@ -139,7 +133,6 @@
         fetchProfilePicture() {
             this.$store.dispatch("user/fetchProfilePicture",this.user.id).then(
                 (data) => {
-                    console.log(data.data);
                     const imageBlob = new Blob([data.data])
                     const imageObjectURL = URL.createObjectURL(imageBlob);
                     URL.revokeObjectURL(this.imageBlob)
@@ -166,7 +159,6 @@
             background-color:#F5F5F5;
             border-radius:10px;
             width:250px;
-            /* height:60px; */
             overflow:hidden;
             box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
             height:70px;

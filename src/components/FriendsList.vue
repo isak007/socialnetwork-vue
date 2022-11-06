@@ -121,13 +121,6 @@ export default {
         (data) => {
             this.totalFriends = data.totalFriends;
             for(let userReturnedInd in data.users){
-                // var contains = false;
-                // for (let user in this.friendsList){
-                //     if (commentWD.commentDTO.id == commentWithData.commentDTO.id){
-                //         contains = true;
-                //         break;
-                //     }
-                // }
                 let userReturned = data.users[userReturnedInd];
                 if (!this.friendsList.includes(userReturned)){
                     this.friendsList.push(userReturned);

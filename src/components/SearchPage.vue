@@ -2,7 +2,6 @@
   <div>
       <div v-if="!loadingUsers" style="margin-bottom:10px;align-content:center">
             <div style="text-align:center;margin-top:20px">
-                <!-- <h3 v-if="this.userList.length > 0">Search results for: {{this.searchTerm}}</h3> -->
                 <h3 v-if="this.userList.length == 0">No results for: {{this.searchTerm}}</h3>
             </div>
             <div v-for="(user) in this.userList" :key="user">
@@ -16,9 +15,6 @@
                 <h3>Loading users...</h3>
             </div>
       </div>
-
-      <!-- <div>{{friendRequest != null ? friendRequest.requestStatus : ""}}</div> -->
-
   </div>
 </template>
 
@@ -39,7 +35,6 @@ export default {
             page: 0,
             lastPage: false,
             message: "",
-            // reload component
             friendRequest: this.$route.params.friendRequest
         }
     },
@@ -126,21 +121,6 @@ export default {
     margin-left:5px;
     color:red;
   }
-
-  /* #header{
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
-    border-bottom-left-radius: 15px;
-    border-bottom-right-radius: 15px;
-    padding-top:30px;
-    padding-left:50px;
-    padding-right:50px;
-    padding-bottom:30px;
-    float:left;
-    width:100%;
-    background-color: rgb(255, 255, 255);
-    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
-  } */
 
   .container{
     padding:10px;

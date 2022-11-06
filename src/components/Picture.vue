@@ -17,7 +17,7 @@
 
 
 <script>
-	import 'babel-polyfill'; // es6 shim
+	import 'babel-polyfill';
 	import myUpload from 'vue-image-crop-upload';
 
 	export default{
@@ -28,14 +28,7 @@
 		data() {
             return {
                 show: false,
-                params: {
-                    token: '123456798',
-                    name: 'avatar'
-                },
-                headers: {
-                    smail: '*_~'
-                },
-                imgDataUrl: this.pictureDisplay // the datebase64 url of created image
+                imgDataUrl: this.pictureDisplay
             }
 		},
 		components: {
@@ -43,31 +36,19 @@
 		},
 		methods: {
             onPictureChange(e) {
-            if (e.target.files && e.target.files[0]) {
-                let pic = e.target.files[0];
-                this.newPictureName = pic.name;
-                this.newPictureObject = pic;
-            }
-          },
+                if (e.target.files && e.target.files[0]) {
+                    let pic = e.target.files[0];
+                    this.newPictureName = pic.name;
+                    this.newPictureObject = pic;
+                }
+            },
 			toggleShow() {
 				this.show = !this.show;
 			},
-            /**
-			 * crop success
-			 *
-			 * [param] imgDataUrl
-			 * [param] field
-			 */
 			cropSuccess(imgDataUrl, field){
 				console.log('-------- crop success --------');
 				this.imgDataUrl = imgDataUrl;
 			},
-			/**
-			 * upload success
-			 *
-			 * [param] jsonData  server api return data, already json encode
-			 * [param] field
-			 */
 		}
 	};
 </script>

@@ -16,7 +16,6 @@
 
 <script>
 import Post from './Post.vue';
-import { ref } from 'vue';
 export default {
   name: "PostPage",
   components: {
@@ -84,17 +83,4 @@ export default {
         background-color:white;
         box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
     }
-
-    /* #post{
-        margin-bottom:40px;
-        padding-top:30px;
-        padding-left:50px;
-        padding-right:50px;
-        padding-bottom:30px;
-        border-radius:20px;
-        float:left;
-        width:100%;
-        background-color:white;
-        box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
-    } */
 </style>

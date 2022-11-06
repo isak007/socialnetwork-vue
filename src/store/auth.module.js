@@ -21,11 +21,9 @@ export const auth = {
     accountActivation({ commit }, jwt) {
         return AuthService.activateAccount(jwt).then(
           user => {
-            commit('activationSuccess', user);
             return Promise.resolve(user);
           },
           error => {
-            commit('activationFailure');
             return Promise.reject(error);
           }
         );
@@ -33,11 +31,9 @@ export const auth = {
     passwordReset({ commit }, passwordReset) {
         return AuthService.passwordReset(passwordReset).then(
           response => {
-            commit('postSuccessful');
             return Promise.resolve(response.data);
           },
           error => {
-            commit('postFailure');
             return Promise.reject(error);
           }
         );
@@ -45,11 +41,9 @@ export const auth = {
     prePasswordResetAuth({ commit }, jwt) {
         return AuthService.prePasswordResetAuth(jwt).then(
           response => {
-            commit('getSuccessful');
             return Promise.resolve(response.data);
           },
           error => {
-            commit('getFailure');
             return Promise.reject(error);
           }
         );
@@ -57,11 +51,9 @@ export const auth = {
     sendPasswordResetCode({ commit }, email) {
         return AuthService.sendPasswordResetCode(email).then(
           response => {
-            commit('resetSuccess', response);
             return Promise.resolve(response);
           },
           error => {
-            commit('resetFailure');
             return Promise.reject(error);
           }
         );
@@ -97,11 +89,9 @@ export const auth = {
     sendEmailVerificationCode({ commit }, email) {
         return AuthService.sendEmailVerificationCode(email).then(
           response => {
-            commit('sendSuccess');
             return Promise.resolve(response);
           },
           error => {
-            commit('sendFailure');
             return Promise.reject(error);
           }
         );

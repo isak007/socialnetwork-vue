@@ -8,13 +8,11 @@
     />
     <Form v-if="!resettingPassword" style="text-align:center" @submit="handleLogin" :validation-schema="schemaLogin">
       <div class="form-group">
-        <!-- <label for="username">Username</label> -->
         <Field name="username" type="text" class="form-control" placeholder="Username" />
         <ErrorMessage name="username" class="error-feedback" />
       </div>
 
       <div class="form-group">
-        <!-- <label for="password">Password</label> -->
         <div class="field has-addons">
             <div class="control is-expanded">
                 <Field name="password" type="text" class="form-control" v-if="this.showPassword" placeholder="Password"/>
@@ -57,9 +55,6 @@
         <label for="email" style="font-size:13px;padding:5px">Enter an email where you'll receive a link for password reset.</label>
         <Field name="email" type="text" class="form-control" placeholder="Email"/>
         <div style="text-align:center"><ErrorMessage name="email" class="error-feedback"/></div>
-        <!-- <div style="text-align:left">
-            <button @click.prevent="this.resetPassword" class="btn btn-link btn-sm">Go back</button>
-        </div> -->
       </div>
 
       <div class="form-group">
@@ -70,9 +65,6 @@
             >
             {{ message }}
         </div>
-        <!-- <div v-if="message" class="alert alert-danger" role="alert">
-          {{ message }}
-        </div> -->
       </div>
 
       <div v-if="!successful" class="form-group">

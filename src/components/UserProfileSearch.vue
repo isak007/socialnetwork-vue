@@ -159,11 +159,7 @@ export default {
                 (data) => {
                     const imageBlob = new Blob([data.data])
                     const imageObjectURL = URL.createObjectURL(imageBlob);
-                    console.log(imageObjectURL);
                     this.imageContainer = imageObjectURL;
-                    // URL.revokeObjectURL(this.imageBlob)
-                    // this.currentPictureObject = imageObjectURL;
-                    // this.displayPictureObject = imageObjectURL;
                 },
                 (error) => {
                     console.log(error);
@@ -190,27 +186,25 @@ export default {
 }
 </script>
 
-    <style scoped>
-        #userProfileSearch{
-            /* float:center; */
-            width:700px;
-            height:120px;
-            margin-bottom:5px;
-            margin-top:15px;
-            /* padding:10px; */
-            background-color:#ffffff;
-            border-radius:10px;
-            border-top-left-radius: 5px;
-            border-bottom-left-radius: 5px;
-            box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
-            word-break: break-word;
-            overflow:hidden;
-        }
-        #friendRequestImg{
-            opacity:1
-        }
-        #friendRequestImg:hover{
-            cursor:pointer;
-            opacity:0.7
-        }
-    </style>
+<style scoped>
+    #userProfileSearch{
+        width:700px;
+        height:120px;
+        margin-bottom:5px;
+        margin-top:15px;
+        background-color:#ffffff;
+        border-radius:10px;
+        border-top-left-radius: 5px;
+        border-bottom-left-radius: 5px;
+        box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+        word-break: break-word;
+        overflow:hidden;
+    }
+    #friendRequestImg{
+        opacity:1
+    }
+    #friendRequestImg:hover{
+        cursor:pointer;
+        opacity:0.7
+    }
+</style>

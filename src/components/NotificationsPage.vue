@@ -3,12 +3,9 @@
         <div :style="(this.notifications.length % 2 == 0 && this.notifications.length != 0) || this.notifications.length >= 9
             ? notificationsStyle : notificationsStyleFitContent">
             <div v-if="this.notifications.length > 0">
-                    <!-- <perfect-scrollbar @mouseenter="this.disableScrollable" @mouseleave="this.enableScrollable"
-                        @ps-y-reach-end="this.scrollEndHandleNotifications" @ps-scroll-up="this.scrollUpHandleNotifications"> -->
-                        <div v-for="(notification) in this.notifications" :key="notification">
-                            <Notification @notification-click="onNotificationClick" :notification='notification'/>
-                        </div>
-                    <!-- </perfect-scrollbar> -->
+                    <div v-for="(notification) in this.notifications" :key="notification">
+                        <Notification @notification-click="onNotificationClick" :notification='notification'/>
+                    </div>
                     <div style="text-align:center;">
                         <div v-if="!lastPageNotifications" style="text-align:center;margin-bottom:10px;margin-top:5px;">
                             <Button style="color:#17a2b8;text-decoration:none" @click.prevent="this.fetchNotifications" class="btn btn-link btn-sm"
@@ -31,13 +28,11 @@
 </template>
 
 <script>
-import 'babel-polyfill'; // es6 shim
-// import { PerfectScrollbar } from 'vue3-perfect-scrollbar'
+import 'babel-polyfill';
 import Notification from './Notification.vue'
 export default {
     name: 'NotificationsPage',
     components: {
-        // PerfectScrollbar,
         Notification
     },
     data(){
@@ -51,19 +46,14 @@ export default {
             totalNotifications: 0,
             scrolledBottomNotifications:false,
             lastPageNotifications:false,
-            // friendRequest: this.$route.params.friendRequest,
-
             notificationsStyle: {
                 marginTop:'10px',
                 float:'left',
                 width:'820px',
-                // width:'fit-content',
                 marginBottom:'10px',
-                // display:'flex',
                 backgroundColor:'white',
                 borderRadius:'10px',
                 boxShadow: 'rgba(0, 0, 0, 0.16) 0px 1px 4px',
-                // borderTopLeftRadius:'0'
             },
             notificationsStyleFitContent: {
                 marginTop:'10px',
@@ -71,11 +61,9 @@ export default {
                 maxWidth:'820px',
                 width:'fit-content',
                 marginBottom:'10px',
-                // display:'flex',
                 backgroundColor:'white',
                 borderRadius:'10px',
                 boxShadow: 'rgba(0, 0, 0, 0.16) 0px 1px 4px',
-                // borderTopLeftRadius:'0'
             },
             timer:'',
         }
@@ -103,10 +91,6 @@ export default {
             this.scrolledBottomNotifications = true;
         },
         disableScrollable(){
-            // dont disable if there is not enough friends in list for scrolling
-            // if (this.friendRequestsWithData.length <= 5){
-            //     return;
-            // }
             // Get the current page scroll position
             var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
             var scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
@@ -132,7 +116,6 @@ export default {
             this.totalPendingFriendRequests -= 1;
             
             this.$root.$data.totalPendingFriendRequests -= 1;
-            // this.$root.$data.friendRequestsWithData = this.friendRequestsWithData;
         },
         fetchNotifications(type) {
             if (type!="update") var page =  Math.floor(this.notifications.length / 10)
@@ -140,7 +123,6 @@ export default {
             this.$store.dispatch("notification/fetchNotifications", page).then(
                 (data) => {
                     this.totalNotifications = data.totalNotifications;
-                    // this.notifications = data.notifications;
                     for (let ind in data.notifications){
                         let returnedNotification = data.notifications[ind];
                         let exists = false;
@@ -187,21 +169,6 @@ export default {
   .btn:focus{
     box-shadow: none;
   }
-
-  /* #header{
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
-    border-bottom-left-radius: 15px;
-    border-bottom-right-radius: 15px;
-    padding-top:30px;
-    padding-left:50px;
-    padding-right:50px;
-    padding-bottom:30px;
-    float:left;
-    width:100%;
-    background-color: rgb(255, 255, 255);
-    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
-  } */
 
   .container{
     padding:10px;

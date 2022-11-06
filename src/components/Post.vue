@@ -64,10 +64,6 @@
                 :src="this.displayPostPictureObject"/>
         </div>
 
-        <!-- <video :ref="refreshKey" controls style="width:fit-content">
-            <source type="video/webm" :src="this.displayVideo">
-        </video> -->
-
         <div style="margin-bottom:15px;margin-left:5px;float:left;width:100%">
             <VTooltip theme="tooltip" style="margin-right:5px;float:right;color:grey">
                 <div style="margin-top:3px;margin-right:5px;float:right;color:grey">
@@ -100,7 +96,6 @@
                                 <div style="padding:10px;padding-right:20px;padding-top:5px;padding-bottom:5px;max-height:247px">
                                     <div v-for="(user) in this.postLikes" :key="user">
                                         <router-link v-if='this.$store.state.auth.user.userId != user.id' :to="'/profile/'+user.username" style="color:#17a2b8;text-decoration:none">
-                                            <!-- <span style="color:grey">[{{user.username}}]</span> -->
                                             {{user.firstName}} {{user.lastName}}
                                         </router-link>
                                         <router-link v-else :to="'/my-profile'" style="color:#17a2b8;text-decoration:none">
@@ -111,11 +106,9 @@
                             </perfect-scrollbar>
 
                             <div v-if="this.postLikes.length > 10 && !this.scrolledBottom && !this.loadingLikes" style="text-align:center">
-                                <!-- <div style="font-size:10px">Scroll down</div> -->
                                 <img style="width:10px;height:10px" src="../assets/icon-arrow-down.png">
                             </div>
                             <div v-if="this.postLikes.length > 10 && this.scrolledBottom && !this.loadingLikes" style="text-align:center">
-                                <!-- <div style="font-size:12px">&nbsp;</div> -->
                                 &nbsp;
                             </div>
 
@@ -155,10 +148,6 @@
                 {{this.post.text}}
             </div>
         </div>
-
-        <!-- <div v-if="!this.editable && this.post.text" style="margin:5px;margin-top:10px;margin-bottom:10px;word-break: break-word;overflow:hidden;cursor:default">
-            <div>{{this.post.text}}</div>
-        </div> -->
 
         <hr style="float:left;width:100%"/>
 
@@ -240,11 +229,6 @@ import { ref } from 'vue';
         if (this.post.picture != null && this.post.picture != ""){
             this.fetchPostPicture();
         }
-        // test
-        // this.lastPageLikes = false;
-        // for (let i=0; i<20;i++){
-        //     this.postLikes.push(this.postLikes[0]);
-        // }
       },
       unmounted(){
         clearTimeout(this.timer);
@@ -354,7 +338,7 @@ import { ref } from 'vue';
             return displayDate;
         },
         onChangeVisibility: function(e){
-            this.newVisibility = e.target.value;//e.target.options[e.target.options.selectedIndex].text;
+            this.newVisibility = e.target.value;
             if (this.newVisibility == this.postWithData.postDTO.visibility && this.newDescription == this.postWithData.postDTO.text){
                 this.canUpdate = false;
             } else{ this.canUpdate = true; }
@@ -523,7 +507,6 @@ import { ref } from 'vue';
         fetchProfilePicture(){
             this.$store.dispatch("user/fetchProfilePicture",this.post.userId).then(
                 (data) => {
-                    console.log(data.data);
                     const imageBlob = new Blob([data.data])
                     const imageObjectURL = URL.createObjectURL(imageBlob);
                     URL.revokeObjectURL(this.imageBlob)
@@ -537,23 +520,10 @@ import { ref } from 'vue';
         fetchPostPicture() {
             this.$store.dispatch("user/fetchPostPicture",this.post.id).then(
                 (data) => {
-                    // this.displayVideo =  btoa(String.fromCharCode.apply(null, new Uint8Array(data)));
-                    // var fileData = data.data.toString().split(",")[1];
-                    // var reader = new FileReader();
-                    // reader.readAsDataURL(data.data); 
-                    // reader.onloadend = function() {
-                    //     var base64data = reader.result;
-                    //     this.displayVideo = base64data;
-                    //     this.refreshKey+=1;
-                    //     console.log(this.displayVideo);
-                    // }
-
                     const imageBlob = new Blob([data.data]);
                     const imageObjectURL = URL.createObjectURL(imageBlob);
                     URL.revokeObjectURL(this.imageBlob)
                     this.displayPostPictureObject = imageObjectURL;
-                    console.log(imageBlob);
-                    console.log(imageObjectURL);
                 },
                 (error) => {
                     console.log(error);

@@ -99,10 +99,6 @@ export default {
   },
   methods: {
     onCommentDelete(commentId) {
-        // if (!this.lastPage && (this.commentsList.length/(this.page+1) % 4 == 0)){
-        //     this.page -= 1;
-        //     if (this.page < 0) this.page = 0;
-        // }
         for (let commentInd in this.commentsList){
             var commentWD = this.commentsList[commentInd];
             if (commentWD.commentDTO.id == commentId){
@@ -115,23 +111,12 @@ export default {
     },
     toggleComments(){
         this.showComments = !this.showComments;
-        // the state is remembered so scrolledBottom can remain the same
-        // if (this.scrolledBottom){
-        //     this.scrolledBottom = false;
-        // }
     },
     scrollUpHandle(e){
         this.scrolledBottom = false;
     },
     scrollEndHandle(e){
         this.scrolledBottom = true;
-        // if there was actually scrolling (enough elements for scrolling)
-        // if (this.commentsList.length > 3){
-        //     // if comments are already fetching
-        //     if (!this.loadingComments && !this.lastPage){
-        //         this.loadComments();
-        //     }
-        // }
     },
     forceRerender(){
         this.refreshKey += 1;
@@ -145,16 +130,11 @@ export default {
         }
         this.$store.dispatch("comment/createComment", comment).then(
             (data) => {
-                console.log(data);
                 this.commentsList.unshift(data);
-                // if (this.commentsList.length/(this.page+1) % 4 == 1){
-                //     this.page += 1;
-                // }
                 this.totalComments += 1;
                 this.canCreateComment = false;
                 this.creating = false;
                 this.loading = false;
-                //this.forceRerender();
             },
             (error) => {
                 this.message =
@@ -204,11 +184,6 @@ export default {
         }
         this.$store.dispatch("comment/fetchCommentsList", commentsData).then(
             (data) => {
-                // set comments to refresh if its first time fetching
-                // and there are comments
-                // if (this.commentsList.length == 0 && data.length > 0){
-                //     this.setRefreshable();
-                // }
                 for(let commentIndex in data.commentsWithDataDTO){
                     var commentWithData = data.commentsWithDataDTO[commentIndex];
                     var contains = false;
@@ -229,11 +204,7 @@ export default {
                 if (data.commentsWithDataDTO.length < 4 || this.commentsList.length == this.totalComments){
                     this.lastPage = true;
                 } 
-                // else{
-                //     this.page += 1;
-                // }
                 this.loading = false;
-                console.log(this.postsList);
                 this.loadingComments = false;
             },
             (error) => {
@@ -255,8 +226,5 @@ export default {
         padding:10px;
         float:left;
         width:100%;
-        /* border-radius:10px; */
-        /* box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px; */
-        /* box-shadow: rgba(0, 0, 0, 0.06) 0px 2px 4px 0px inset; */
     }
 </style>

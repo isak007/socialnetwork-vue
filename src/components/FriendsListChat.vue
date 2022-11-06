@@ -50,10 +50,6 @@ export default {
   methods: {
     onClickChat(user, lastChatLineNotification, editLastChatLine) {
         this.clickChat(user, lastChatLineNotification, editLastChatLine);
-        console.log(user); // LOGS DATA FROM CHILD
-        // if (!this.openChatUsersList.includes(user)){
-        // this.openChatUsersList.push(user);
-        // }
     },
     scrollUpHandle(e){
         this.scrolledBottom = false;
@@ -67,10 +63,6 @@ export default {
         }
     },
     disableScrollable(){
-        // dont disable if there is not enough friends in list for scrolling
-        // if (this.friendsList.length <= 10){
-        //     return;
-        // }
         // Get the current page scroll position
         var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
         var scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;

@@ -51,7 +51,6 @@
         fetchProfilePicture() {
             this.$store.dispatch("user/fetchProfilePicture",this.user.id).then(
                 (data) => {
-                    console.log(data.data);
                     const imageBlob = new Blob([data.data])
                     const imageObjectURL = URL.createObjectURL(imageBlob);
                     URL.revokeObjectURL(this.imageBlob)

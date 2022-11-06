@@ -12,11 +12,9 @@ export const chat = {
     fetchChat({ commit }, data) {
         return ChatService.fetchChat(data).then(
           response => {
-            commit('fetchSuccessfull');
             return Promise.resolve(response.data);
           },
           error => {
-            commit('fetchFailure');
             return Promise.reject(error);
           }
         );
@@ -24,11 +22,9 @@ export const chat = {
     createChat({ commit }, chat) {
         return ChatService.createChat(chat).then(
           response => {
-            commit('postSuccessfull');
             return Promise.resolve(response.data);
           },
           error => {
-            commit('postFailure');
             return Promise.reject(error);
           }
         );
@@ -37,11 +33,9 @@ export const chat = {
     deleteChat({ commit }, chatId) {
         return ChatService.deleteChat(chatId).then(
           response => {
-            commit('deleteSuccessfull');
             return Promise.resolve(response.data);
           },
           error => {
-            commit('deleteFailure');
             return Promise.reject(error);
           }
         );

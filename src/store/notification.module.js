@@ -12,11 +12,9 @@ export const notification = {
     fetchNotifications({ commit }, page) {
         return NotificationService.fetchNotifications(page).then(
           response => {
-            // commit('fetchSuccessfull');
             return Promise.resolve(response.data);
           },
           error => {
-            // commit('fetchFailure');
             return Promise.reject(error);
           }
         );
@@ -24,11 +22,9 @@ export const notification = {
     fetchNotification({ commit }, data) {
         return NotificationService.fetchNotification(data).then(
           response => {
-            // commit('fetchSuccessfull');
             return Promise.resolve(response.data);
           },
           error => {
-            // commit('fetchFailure');
             return Promise.reject(error);
           }
         );
@@ -36,11 +32,9 @@ export const notification = {
     createNotification({ commit }, notification) {
         return NotificationService.createNotification(notification).then(
           response => {
-            commit('postSuccessfull');
             return Promise.resolve(response.data);
           },
           error => {
-            commit('postFailure');
             return Promise.reject(error);
           }
         );
@@ -49,11 +43,9 @@ export const notification = {
     updateNotification({ commit }, notification) {
         return NotificationService.updateNotification(notification).then(
           response => {
-            commit('putSuccessfull');
             return Promise.resolve(response.data);
           },
           error => {
-            commit('pttFailure');
             return Promise.reject(error);
           }
         );

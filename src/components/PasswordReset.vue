@@ -3,7 +3,6 @@
 
     <Form v-if="!successful" style="text-align:left" @submit="passwordReset" :validation-schema="schema">
       <div class="form-group">
-        <!-- <label for="password">Password</label> -->
         <div class="field has-addons">
             <div class="control is-expanded">
                 <Field name="newPassword" type="text" class="form-control" v-if="this.showNewPassword" placeholder="New password"/>
@@ -21,7 +20,6 @@
         </div>
       </div>
       <div class="form-group">
-        <!-- <label for="password">Password</label> -->
         <div class="field has-addons">
             <div class="control is-expanded">
                 <Field name="newPasswordConfirmation" type="text" class="form-control" v-if="this.showConfirmedPassword" placeholder="Confirm new password"/>
@@ -67,20 +65,6 @@
         </button>
     </div>
 
-
-    <!-- <div v-if="loading">
-    <p>
-        <strong>Wait while we activate your account...</strong>
-    </p>
-    <button class="btn btn-primary btn-block" :disabled="loading">
-        <span
-        v-show="loading"
-        class="spinner-border spinner-border-sm"
-        ></span>
-        <span> Activating your account</span>
-    </button>
-    </div> -->
-
   </div>
 </template>
 
@@ -106,14 +90,9 @@ import * as yup from "yup";
                     .oneOf([yup.ref('newPassword')], 'Passwords do not match.')
                     .required("Password confirmation is required."),
             });
-            // const lastIndex = this.$route.params.passwordResetData.lastIndexOf('$2a');
-            // const email = this.$route.params.passwordResetData.slice(0,lastIndex);
-            // const resetCode = this.$route.params.passwordResetData.slice(lastIndex);
             return {
                 loading: false,
                 passwordResetJwt: this.$route.params.jwt,
-                // email: email,
-                // resetCode: resetCode,
                 successful: false,
                 message: "",
                 schema,

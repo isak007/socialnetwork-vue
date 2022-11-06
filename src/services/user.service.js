@@ -52,17 +52,6 @@ class UserService{
                  }
             });
     }
-    // fetchCityList(data){
-    //     if (data.newToken != undefined && data.newToken != "") AUTH_TOKEN = data.newToken;
-    //     return axios.get("https://autocomplete.search.hereapi.com/v1/autocomplete",{
-    //         headers: { Authorization : 'Bearer ' + AUTH_TOKEN },
-    //         params: {
-    //             q: data.queryString,
-    //             types: "city",
-    //             apiKey: API_KEY
-    //         }
-    //     })
-    // }
     searchUsers(data){
         return axios.get(USERS_API_BASE_URL+'/search/'+data.queryString,
             { 
