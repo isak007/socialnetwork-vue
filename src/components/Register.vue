@@ -23,7 +23,7 @@
                 </my-upload>
 
                 <div style="float:center;width:100%">
-                    <div v-if="this.newPictureObject"><Button style="color:black" @click="this.clearImageSelection" class="btn btn-link btn-sm">Remove</Button></div>
+                    <div v-if="this.newPictureObject"><button style="color:black" @click="this.clearImageSelection" class="btn btn-link btn-sm">Remove</button></div>
                     <span><button style="border: 1px solid gray; border-radius:2px" @click="toggleShow">Upload picture</button></span>
                 </div>
             </div>
@@ -78,15 +78,23 @@
                                         id="typeahead_id"
                                         :items="this.cityList"
                                         :minInputLength="2"
-                                        :itemProjection="itemProjectionFunction"
                                         @selectItem="(event) => {field.value = event; updateCity(event)}"
                                         @onInput="(event) => updateCityList(event)"
-                                        @onFocus="onFocusEventHandler"
                                         @onBlur="(event) => onBlurCityHandler(event)"
                                     >
                                         <template #list-item-text="slot">
-                                            <span><img src="../assets/location_tag.png"></span>&nbsp;
-                                            <span v-html="slot.boldMatchText(slot.itemProjection(slot.item))"></span>
+                                            <div v-if="!this.loadingCities">
+                                                <span><img src="../assets/location_tag.png"></span>&nbsp;
+                                                <span v-html="slot.boldMatchText(slot.itemProjection(slot.item))"></span>
+                                            </div>
+                                            <div v-else style="text-align:center">
+                                                <button style="color:#17a2b8;text-decoration:none" class="btn btn-link btn-sm" :disabled="this.loadingCities">
+                                                    <span
+                                                        v-show="this.loadingCities"
+                                                        class="spinner-border spinner-border-sm"
+                                                    ></span>
+                                                </button>
+                                            </div>
                                         </template>
                                     </vue3-simple-typeahead>
                                     <div class="error-feedback" > {{this.cityError}} </div>
@@ -260,7 +268,8 @@ export default {
       selectedCity: "",
       cityError: "",
       maxDate,
-      minDate
+      minDate,
+      loadingCities: false,
     };
   },
   computed: {
@@ -310,33 +319,36 @@ export default {
             if (e.input == "") this.cityError = "";
             return;
         }
-
         const queryString = e.input;
+        this.cityList = [];
+        this.cityList.push(queryString);
+        this.loadingCities = true;
         this.$store.dispatch("user/fetchCityList", queryString).then(
-        (data) => {
-          this.cityList = [];
-          for (let resultNum in data.items){
-            let result = data.items[resultNum]
-            if (!result.address.city || !result.address.countryName ||
-                !result.address.countryCode){
-                continue
+            (data) => {
+                this.cityList = [];
+                for (let resultNum in data.items){
+                    let result = data.items[resultNum]
+                    if (!result.address.city || !result.address.countryName ||
+                        !result.address.countryCode){
+                        continue
+                    }
+                    console.log(result)
+                    this.cityList.push((result.address.postalCode!=null ? result.address.postalCode +" " : "") +
+                        result.address.city+", "+
+                        result.address.countryName+" "+
+                        result.address.countryCode)
+                }
+                this.loadingCities = false;
+            },
+            (error) => {
+                console.log(
+                    (error.response &&
+                    error.response.data &&
+                    error.response.data.message) ||
+                    error.message ||
+                    error.toString()
+                )
             }
-            console.log(result)
-            this.cityList.push((result.address.postalCode!=null ? result.address.postalCode +" " : "") +
-                result.address.city+", "+
-                result.address.countryName+" "+
-                result.address.countryCode)
-          }
-        },
-        (error) => {
-          console.log(
-            (error.response &&
-              error.response.data &&
-              error.response.data.message) ||
-            error.message ||
-            error.toString()
-          )
-        }
       );
     },
 

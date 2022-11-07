@@ -34,9 +34,13 @@
                     <span style="color:#17a2b8;">{{this.user.firstName}}&nbsp;{{this.user.lastName}}</span>
                     has liked your comment.
                 </div>
-                <div v-if="notification.objectType=='FRIEND_REQUEST'" style="cursor:pointer">
+                <div v-if="notification.objectType=='FRIEND_REQUEST' && notification.activityType=='Sent friend request'" style="cursor:pointer">
                     <span style="color:#17a2b8;">{{this.user.firstName}}&nbsp;{{this.user.lastName}}</span>
                     has sent you a friend request.
+                </div>
+                <div v-if="notification.objectType=='FRIEND_REQUEST' && notification.activityType=='Accepted friend request'" style="cursor:pointer">
+                    <span style="color:#17a2b8;">{{this.user.firstName}}&nbsp;{{this.user.lastName}}</span>
+                    has accepted your friend request.
                 </div>
             </div>
         </div>

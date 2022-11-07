@@ -42,7 +42,6 @@ export default {
     };
   },
   created(){
-    //this.loadFriends();
     if (this.friendsList.length < 21 || this.totalFriends == this.friendsList.length){
         this.lastPage = true;
     }

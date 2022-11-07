@@ -12,7 +12,7 @@
                     :src="this.displayPictureObject"/>
                 <span style="word-break:break-word;color:grey;margin-left:15px" @click="this.expandClickHandler">
                     <div style="display:inline-block;vertical-align:middle">
-                        <div style="color:#5DA7DB;text-decoration:none;font-size:13px">{{this.user.firstName}}&nbsp;{{this.user.lastName}}</div>
+                        <div style="color:#1e9caf;text-decoration:none;font-size:13px">{{this.user.firstName}}&nbsp;{{this.user.lastName}}</div>
                         <div style="font-size:12px;color:grey;margin-bottom:3px">@{{this.user.username}}</div>
                     </div>
                 </span>
@@ -23,7 +23,7 @@
         </div>
         <div v-show="this.expanded" style="margin-top:1px;text-align:left">
             <perfect-scrollbar :key="refreshKey" @mouseenter="this.disableScrollable" @mouseleave="this.enableScrollable" style="max-height:300px;overflow-y:scroll" ref="scrollChat"
-                @ps-y-reach-start="this.scrollStartHandle" @ps-scroll-down="this.scrollDownHandle" @ps-scroll-up="this.scrollUpHandle">
+                @ps-y-reach-start="this.scrollStartHandle" @ps-scroll-down="this.scrollDownHandle">
                 <div v-for="(chatLine) in this.chatLines" :key="chatLine">
                     <div v-if="this.chatLines.indexOf(chatLine) == 0" style="text-align:center;font-size:12px">
                         <span
@@ -72,16 +72,16 @@
                 </div>
             </perfect-scrollbar>
                  
-            <Form @submit="createChatLine" @keyup.enter="createChatLine" style="margin-top:3px">
+            <form @submit="createChatLine" @keyup.enter="createChatLine" style="margin-top:3px">
                 <div :key="refreshKey" @keydown.enter.prevent
                   id="chatLineText" role="textbox" aria-placeholder="Type something..." contenteditable="true" @input="(event) => this.newChatLineTextHandler(event)">
                  </div>
                 <div style="display:inline-block;vertical-align:bottom">
-                    <Button @click.prevent="this.createChatLine" class="btn btn-none" style="padding:3px">
+                    <button @click.prevent="this.createChatLine" class="btn btn-none" style="padding:3px">
                         <img style="margin-bottom:5px" src="../assets/send-16.png" id="closeChatImg"/>
-                    </Button>
+                    </button>
                 </div>
-            </Form>
+            </form>
         </div>
     </div>
 </template>
@@ -272,7 +272,6 @@ import { ref } from 'vue';
             if (this.scrolledTop || this.totalChatLines == this.chatLines.length) return;
             this.scrolledTop = true;
             this.fetchChatLines("more"); 
-            // this.$refs.scrollChat.$el.scrollTop = 300
         },
         disableScrollable(){
             // Get the current page scroll position
@@ -299,7 +298,6 @@ import { ref } from 'vue';
         fetchProfilePicture() {
             this.$store.dispatch("user/fetchProfilePicture",this.user.id).then(
                 (data) => {
-                    console.log(data.data);
                     const imageBlob = new Blob([data.data])
                     const imageObjectURL = URL.createObjectURL(imageBlob);
                     URL.revokeObjectURL(this.imageBlob)
@@ -394,6 +392,7 @@ import { ref } from 'vue';
                 senderId: this.user.id,
                 receiverId: this.sessionUserId,
                 objectId: this.chatLines[this.chatLines.length-1].id,
+                activityType: "Sent message"
             }
              this.$store.dispatch("notification/fetchNotification",data).then(
                 (data) => {

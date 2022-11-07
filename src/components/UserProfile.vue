@@ -13,7 +13,6 @@
             <div v-else>
                 <img id="profile-img" :style="this.imgClicked ? imgClickedStyle : imgUnclickedStyle"
                  class="profile-img-card" @click="this.imgClicked = !this.imgClicked" :src="this.displayPictureObject">
-                <!-- <img id="profile-img" style="width:300px;height:300px;border-radius:50%;margin-bottom:15px;box-shadow: 0 0 10px;" class="profile-img-card" :src="this.displayPictureObject"> -->
             </div>
 
             <div style="word-break: break-word;max-width:350px">
@@ -26,9 +25,6 @@
                 <div style="color:grey"> 
                     <h5>@{{this.user.username}}</h5>
                 </div>
-                <!-- <div v-if="this.user.profileDescription">
-                    <div style="word-break: break-word">{{this.user.profileDescription}}</div>
-                </div> -->
 
                 <div v-if="this.user.profileDescription" style="padding:10px;border-radius:5px; margin-top:10px; border:none;
                 box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;">
@@ -51,10 +47,10 @@
 
                         <template #popper>
                             <div v-if="this.friendRequest==''" style="padding:10px;cursor:pointer">
-                                <Button @click="this.sendFriendRequest" class="btn btn-outline-success btn-sm" :disabled="this.loading"> Send friend request </Button>
+                                <button @click="this.sendFriendRequest" class="btn btn-outline-success btn-sm" :disabled="this.loading"> Send friend request </button>
                             </div>
                             <div v-else style="padding:10px;cursor:pointer">
-                                <Button @click="this.removeFriend" class="btn btn-outline-danger btn-sm" :disabled="this.loading"> Remove friend </Button>
+                                <button @click="this.removeFriend" class="btn btn-outline-danger btn-sm" :disabled="this.loading"> Remove friend </button>
                             </div>
                         </template>
 
@@ -79,7 +75,7 @@
       </div>
 
       <div style="float:left; width:fit-content; margin-right:20px">
-        <Form @submit="handleRegister">
+        <Form>
             <div style="color:grey">
                 <div style="float:left;margin-right:50px">
                     <div class="form-group">
@@ -144,8 +140,6 @@ import { ref } from 'vue';
             PostsList
         },
         data(){
-            console.log(this.$store.state.auth.user.username);
-            console.log(this.username);
             if (this.$store.state.auth.user.username == this.username) this.$router.push("/my-profile");
             return {
                 username: this.$route.params.username,
@@ -172,7 +166,7 @@ import { ref } from 'vue';
                 sendingCode: false,
                 emailCode:"",
                 emailCodeErr: "",
-                friendRequest: '',
+                friendRequest: new Object(),
                 updatingFriendRequest:false,
                 friendsStyle: {
                     float:'left',
@@ -228,7 +222,7 @@ import { ref } from 'vue';
                         if (data != ''){
                             this.friendRequest = data;
                         } else{
-                            this.friendRequest = '';
+                            this.friendRequest = new Object();
                         }
                     },
                     (error) => {

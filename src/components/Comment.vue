@@ -16,14 +16,14 @@
                 <div style="font-size:13px;color:grey">@{{this.user.username}}</div>
             </span>
             <div v-if="this.user.id ==  this.$store.state.auth.user.userId && !editable" style="float:left">
-                <Button @click="this.toggleEditable" class="btn btn-none">
+                <button @click="this.toggleEditable" class="btn btn-none">
                     <img src="../assets/edit-icon-sm.png">
-                </Button>
+                </button>
             </div>
             <div v-if="this.user.id ==  this.$store.state.auth.user.userId && editable" style="float:left">
-                <Button style="margin-right:5px;" v-if="!this.editing" @click="this.editComment" class="btn btn-info btn-sm" :disabled="this.editing || this.deleting || !this.canUpdate">
+                <button style="margin-right:5px;" v-if="!this.editing" @click="this.editComment" class="btn btn-info btn-sm" :disabled="this.editing || this.deleting || !this.canUpdate">
                     Update
-                </Button>
+                </button>
                 <span style="margin-right:5px;" v-if="this.editing && this.canUpdate">
                     <button class="btn btn-info btn-sm" :disabled="loading">
                     <span
@@ -33,7 +33,7 @@
                     <span>Updating</span>
                     </button>
                 </span>
-                <Button v-if="!this.deleting" @click="this.deleteComment" class="btn btn-outline-danger btn-sm" :disabled="this.editing || this.deleting">Delete</Button>
+                <button v-if="!this.deleting" @click="this.deleteComment" class="btn btn-outline-danger btn-sm" :disabled="this.editing || this.deleting">Delete</button>
                 <span v-else>
                     <button class="btn btn-outline-danger btn-sm" :disabled="loading">
                     <span
@@ -43,7 +43,7 @@
                     <span>Deleting</span>
                     </button>
                 </span>
-                <Button @click="this.toggleEditable" class="btn btn-link btn-sm" style="color:grey" :disabled="this.editing || this.deleting">Cancel</Button>
+                <button @click="this.toggleEditable" class="btn btn-link btn-sm" style="color:grey" :disabled="this.editing || this.deleting">Cancel</button>
             </div>
         </div>
 
@@ -83,7 +83,7 @@
                                 <div style="padding:10px;padding-right:20px;padding-top:5px;padding-bottom:5px;max-height:247px">
                                     <div v-for="(user) in this.likes" :key="user">
                                         <router-link v-if='this.$store.state.auth.user.userId != user.id' :to="'/profile/'+user.username" style="color:#17a2b8;text-decoration:none">
-                                            <!-- <span style="color:grey">[{{user.username}}]</span> -->{{user.firstName}} {{user.lastName}}
+                                            {{user.firstName}} {{user.lastName}}
                                         </router-link>
                                         <router-link v-else :to="'/my-profile'" style="color:#17a2b8;text-decoration:none">
                                             <span style="color:grey">[me]</span> {{user.firstName}} {{user.lastName}}
@@ -93,21 +93,19 @@
                             </perfect-scrollbar>
 
                             <div v-if="this.likes.length > 10 && !this.scrolledBottom && !this.loadingLikes" style="text-align:center">
-                                <!-- <div style="font-size:10px">Scroll down</div> -->
                                 <img style="width:10px;height:10px" src="../assets/icon-arrow-down.png">
                             </div>
                             <div v-if="this.likes.length > 10 && this.scrolledBottom && !this.loadingLikes" style="text-align:center">
-                                <!-- <div style="font-size:12px">&nbsp;</div> -->
                                 &nbsp;
                             </div>
 
                             <div v-if="this.loadingLikes" style="text-align:center">
-                                <Button style="color:#17a2b8;text-decoration:none" class="btn btn-link btn-sm" :disabled="this.loadingLikes">
+                                <button style="color:#17a2b8;text-decoration:none" class="btn btn-link btn-sm" :disabled="this.loadingLikes">
                                     <span
                                         v-show="this.loadingLikes"
                                         class="spinner-border spinner-border-sm"
                                     ></span>
-                                </Button>
+                                </button>
                             </div>
                         </template>
                     </VMenu>
@@ -171,7 +169,8 @@ import { ref } from 'vue';
           likesPage: 1, // because first page is loaded with comment
           scrolledBottom: false,
           lastPageLikes: this.commentWithData.totalLikes <= 15 ? true : false, // bcs there are 15 likes per page
-          refreshKey: ref(0)
+          refreshKey: ref(0),
+          loadingLikes: false,
         };
       },
       mounted(){
@@ -180,6 +179,25 @@ import { ref } from 'vue';
         this.getUserData();
       },
       methods: {
+        scrollEndHandle(e){
+            this.scrolledBottom = true;
+        },
+        scrollUpHandle(e){
+            this.scrolledBottom = false;
+        },
+        disableScrollable(){
+            // Get the current page scroll position
+            var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            var scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+        
+            // if any scroll is attempted, set this to the previous value
+            window.onscroll = function() {
+                window.scrollTo(scrollLeft, scrollTop);
+            };
+        },
+        enableScrollable(){
+            window.onscroll = function() {};
+        },
         setRefreshable(){
             window.setInterval( () => {
                 this.refreshCommentTimeAndLikes()

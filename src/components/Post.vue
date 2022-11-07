@@ -1,5 +1,5 @@
 <template>
-    <div v-if="!deleted" id="post">
+    <div v-if="!deleted && this.$store.state.auth.user" id="post">
         <div style="float:left;width:100%;margin-bottom:15px">
             <div style="float:left">
                 <router-link :to="'/profile/'+this.user.username">
@@ -19,16 +19,16 @@
 
             </div>
             <div v-if="this.user.id ==  this.$store.state.auth.user.userId && !editable" style="float:right">
-                <Button @click="this.toggleEditable" class="btn btn-none">
+                <button @click="this.toggleEditable" class="btn btn-none">
                     <img src="../assets/edit-icon.png">
-                </Button>
+                </button>
             </div>
             <div v-if="editable" style="float:right;margin-top:7px">
-                <Button style="margin-right:5px;"
+                <button style="margin-right:5px;"
                     v-if="!this.editing" @click="this.editPost"
                     class="btn btn-info btn-sm" :disabled="this.editing || this.deleting || this.likingDisliking || !this.canUpdate">
                     Update
-                </Button>
+                </button>
                 <span style="margin-right:5px;" v-if="this.editing && this.canUpdate">
                     <button class="btn btn-info btn-sm" :disabled="loading">
                     <span
@@ -38,7 +38,7 @@
                     <span>Updating</span>
                     </button>
                 </span>
-                <Button v-if="!this.deleting" @click="this.deletePost" class="btn btn-outline-danger btn-sm" :disabled="this.editing || this.deleting || this.likingDisliking">Delete</Button>
+                <button v-if="!this.deleting" @click="this.deletePost" class="btn btn-outline-danger btn-sm" :disabled="this.editing || this.deleting || this.likingDisliking">Delete</button>
                 <span v-else>
                     <button class="btn btn-outline-danger btn-sm" :disabled="loading">
                     <span
@@ -48,7 +48,7 @@
                     <span>Deleting</span>
                     </button>
                 </span>
-                <Button @click="this.toggleEditable" class="btn btn-link btn-sm" style="color:grey" :disabled="this.editing || this.deleting || this.likingDisliking">Cancel</Button>
+                <button @click="this.toggleEditable" class="btn btn-link btn-sm" style="color:grey" :disabled="this.editing || this.deleting || this.likingDisliking">Cancel</button>
             </div>
 
         </div>
@@ -78,8 +78,8 @@
             </VTooltip>
             <div v-if="this.postLikes.length>0">
                 <div style="float:left">
-                    <Button v-if="this.liked" @click="this.deleteLike" class="btn btn-outline-danger btn-sm" :disabled="this.editing || this.deleting || this.likingDisliking">Dislike</Button>
-                    <Button v-else @click="this.createLike" class="btn btn-danger btn-sm" :disabled="this.editing || this.deleting || this.likingDisliking">Like</Button>
+                    <button v-if="this.liked" @click="this.deleteLike" class="btn btn-outline-danger btn-sm" :disabled="this.editing || this.deleting || this.likingDisliking">Dislike</button>
+                    <button v-else @click="this.createLike" class="btn btn-danger btn-sm" :disabled="this.editing || this.deleting || this.likingDisliking">Like</button>
                 </div>
                 <div style="float:left" :key="refreshKey">
                     <VMenu :triggers="['click']" :hideTriggers="['click']">
@@ -113,12 +113,12 @@
                             </div>
 
                             <div v-if="this.loadingLikes" style="text-align:center">
-                                <Button style="color:#17a2b8;text-decoration:none" class="btn btn-link btn-sm" :disabled="this.loadingLikes">
+                                <button style="color:#17a2b8;text-decoration:none" class="btn btn-link btn-sm" :disabled="this.loadingLikes">
                                     <span
                                         v-show="this.loadingLikes"
                                         class="spinner-border spinner-border-sm"
                                     ></span>
-                                </Button>
+                                </button>
                             </div>
                         </template>
                     </VMenu>
@@ -126,8 +126,8 @@
                 
             </div>
             <div v-else>
-                <Button v-if="this.liked" @click="this.deleteLike" class="btn btn-outline-danger btn-sm" :disabled="this.editing || this.deleting || this.likingDisliking">Dislike</Button>
-                <Button v-else @click="this.createLike" class="btn btn-danger btn-sm" :disabled="this.editing || this.deleting || this.likingDisliking">Like</Button>
+                <button v-if="this.liked" @click="this.deleteLike" class="btn btn-outline-danger btn-sm" :disabled="this.editing || this.deleting || this.likingDisliking">Dislike</button>
+                <button v-else @click="this.createLike" class="btn btn-danger btn-sm" :disabled="this.editing || this.deleting || this.likingDisliking">Like</button>
             </div>
         </div>
 
@@ -195,7 +195,7 @@ import { ref } from 'vue';
           content: "",
           displayProfilePictureObject: "",
           displayPostPictureObject: "",
-          user: Object,
+          user: "",
           post: this.postWithData.postDTO,
           postLikes: this.postWithData.postLikesDTO,
           newDescription: this.postWithData.postDTO.text,

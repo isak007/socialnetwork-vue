@@ -3,14 +3,14 @@
       
      <div v-if="!this.loading && this.userId == this.sessionUserId" style="margin-bottom:15px">
         <div style="margin-bottom:5px;">
-            <Button v-if="!this.creatable" id="newPost" @click="this.toggleCreatable" class="btn btn-none">
+            <button v-if="!this.creatable" id="newPost" @click="this.toggleCreatable" class="btn btn-none">
                 <span style="vertical-align:middle"><img src="../assets/create-post-blk.png"></span>
                 <span style="vertical-align:middle;margin-left:7px">Add new post</span>
-            </Button>
-            <Button v-else id="newPost" @click="this.toggleCreatable" class="btn btn-none">
+            </button>
+            <button v-else id="newPost" @click="this.toggleCreatable" class="btn btn-none">
                 <span style="vertical-align:middle"><img src="../assets/cancel-blk.png"></span>
                 <span style="vertical-align:middle;margin-left:7px">Cancel</span>
-            </Button>
+            </button>
         </div>
         <Transition>
             <div v-if="this.creatable" id="createPost">
@@ -39,9 +39,9 @@
                 </div>
 
                 <div style="text-align:center">
-                    <Button v-if="!this.creatingPost" @click="this.createPost" class="btn btn-info btn-sm" style="width:100px" :disabled="!this.canCreate">
+                    <button v-if="!this.creatingPost" @click="this.createPost" class="btn btn-info btn-sm" style="width:100px" :disabled="!this.canCreate">
                         Create
-                    </Button>
+                    </button>
                     <span v-else>
                         <button class="btn btn-outline-info btn-sm" :disabled="creatingPost">
                             <span
@@ -91,7 +91,7 @@ export default {
     Post
   },
   props:{
-    userId: Object,
+    userId: Number,
     friendRequest: Object
   },
   data() {

@@ -18,7 +18,8 @@ class NotificationService{
             params:{
                 senderId: data.senderId,
                 receiverId: data.receiverId,
-                objectId: data.objectId
+                objectId: data.objectId,
+                activityType: data.activityType
             }
         })
     }

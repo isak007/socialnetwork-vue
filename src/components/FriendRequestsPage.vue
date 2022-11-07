@@ -1,14 +1,14 @@
 <template>
     <div style="margin-top:10px;display:flex;justify-content:center;padding-top:5px">
         <div :style="showPending ? pressedButtonStyle : null">
-            <Button @click="this.showPending = true;this.friendRequestsWithData = [];this.fetchPendingRequests()"  class="btn btn-none" >
+            <button @click="this.showPending = true;this.friendRequestsWithData = [];this.fetchPendingRequests()"  class="btn btn-none" >
                 Pending ({{this.totalPendingFriendRequests}})
-            </Button>
+            </button>
         </div>
         <div :style="!showPending ? pressedButtonStyle : null">
-            <Button @click="this.showPending = false;this.friendRequestsWithData = [];this.fetchOtherRequests()"  class="btn btn-none" style="width:100%">
+            <button @click="this.showPending = false;this.friendRequestsWithData = [];this.fetchOtherRequests()"  class="btn btn-none" style="width:100%">
                 Other
-            </Button>
+            </button>
         </div>  
     </div>
     <div style="display:flex;justify-content:center">
@@ -24,13 +24,13 @@
                     </perfect-scrollbar>
                     <div style="text-align:center">
                         <div v-if="!lastPageFriendRequests" style="text-align:center;margin-bottom:10px;margin-top:5px">
-                            <Button style="color:#17a2b8;text-decoration:none" @click.prevent="this.fetchPendingRequests" class="btn btn-link btn-sm" :disabled="this.loadingFriendRequests">
+                            <button style="color:#17a2b8;text-decoration:none" @click.prevent="this.fetchPendingRequests" class="btn btn-link btn-sm" :disabled="this.loadingFriendRequests">
                                 <span
                                     v-show="this.loadingFriendRequests"
                                     class="spinner-border spinner-border-sm"
                                 ></span>
                                 <span v-if="!this.loadingFriendRequests">Load more requests...</span>
-                            </Button>
+                            </button>
                         </div>
                     </div>
             </div>
@@ -50,13 +50,13 @@
                     </perfect-scrollbar>
                     <div style="text-align:center">
                         <div v-if="!lastPageFriendRequests" style="text-align:center;margin-bottom:10px;margin-top:5px">
-                            <Button style="color:#17a2b8;text-decoration:none" @click.prevent="this.fetchPendingRequests" class="btn btn-link btn-sm" :disabled="this.loadingFriendRequests">
+                            <button style="color:#17a2b8;text-decoration:none" @click.prevent="this.fetchPendingRequests" class="btn btn-link btn-sm" :disabled="this.loadingFriendRequests">
                                 <span
                                     v-show="this.loadingFriendRequests"
                                     class="spinner-border spinner-border-sm"
                                 ></span>
                                 <span v-if="!this.loadingFriendRequests">Load more requests...</span>
-                            </Button>
+                            </button>
                         </div>
                     </div>
             </div>
@@ -134,9 +134,6 @@ export default {
             },
             showPending:true,
         }
-    },
-    mounted(){
-        console.log(this.$root);
     },
     methods: {
          scrollUpHandle(e){

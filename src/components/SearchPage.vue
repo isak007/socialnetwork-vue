@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import 'babel-polyfill'; // es6 shim
+import 'babel-polyfill';
 import UserProfileSearch from './UserProfileSearch.vue'
 export default {
     name: 'SearchPage',

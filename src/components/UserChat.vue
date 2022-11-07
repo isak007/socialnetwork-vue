@@ -13,7 +13,7 @@
 
         <span style="word-break:break-word;color:grey;display:inline-block;width:74%">
             <div style="display:inline-block;vertical-align:middle;width:fit-content">
-                <div style="color:#5DA7DB;text-decoration:none;font-size:13px">{{this.user.firstName}}&nbsp;{{this.user.lastName}}</div>
+                <div style="color:#1e9caf;text-decoration:none;font-size:13px">{{this.user.firstName}}&nbsp;{{this.user.lastName}}</div>
                 <div style="font-size:12px;color:grey">@{{this.user.username}}</div>
                 <div style="font-size:11px;color:grey">
                     <span v-if="this.lastChatLine.userId == this.sessionUserId">You: {{this.displayLastChatLine}}</span>
@@ -95,7 +95,8 @@
             const data = {
                 senderId: this.user.id,
                 receiverId: this.sessionUserId,
-                objectId: this.lastChatLine.id
+                objectId: this.lastChatLine.id,
+                activityType: "Sent message"
             }
              this.$store.dispatch("notification/fetchNotification",data).then(
                 (data) => {

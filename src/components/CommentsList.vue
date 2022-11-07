@@ -1,13 +1,13 @@
 <template>
-        <Button style="color:#17a2b8;text-decoration:none;margin-bottom:20px" 
+        <button style="color:#17a2b8;text-decoration:none;margin-bottom:20px" 
             v-if="this.showComments && !this.loading && !this.creating" class="btn btn-link btn-sm" @click="this.toggleCreating">
             Create new comment
-        </Button>
+        </button>
         <div v-if="this.creating" style="color:grey;padding-left:10px;padding-right:10px">
             <textarea v-model="this.newComment" @input="(event) => this.handleNewComment(event)" style="padding:10px;width:100%;border:1px solid grey;border-radius:5px;outline:none"></textarea>
         </div>
         <div v-if="this.creating" style="margin-left:10px;margin-bottom:20px;">
-            <Button v-if="!this.loading" @click="this.createComment" class="btn btn-info btn-sm" :disabled="!this.canCreateComment">Create</Button>
+            <button v-if="!this.loading" @click="this.createComment" class="btn btn-info btn-sm" :disabled="!this.canCreateComment">Create</button>
             <span v-else-if="this.loading">
                 <button class="btn btn-outline-info btn-sm" :disabled="loading">
                     <span
@@ -17,7 +17,7 @@
                     <span>Creating</span>
                 </button>
             </span>
-            <Button @click="this.toggleCreating" class="btn btn-link btn-sm" style="color:grey" :disabled="this.loading">Cancel</Button>
+            <button @click="this.toggleCreating" class="btn btn-link btn-sm" style="color:grey" :disabled="this.loading">Cancel</button>
         </div>
 
         <div style="text-align:center;color:grey" :key="refreshKey" v-if="this.commentsList.length == 0 && this.showComments && !this.loadingComments"><h3> No comments </h3></div>
@@ -41,25 +41,25 @@
         </div>
 
         <div v-if="!lastPage" style="text-align:center">
-            <Button style="color:#17a2b8;text-decoration:none" @click="this.loadComments" class="btn btn-link btn-sm" :disabled="this.loadingComments">
+            <button style="color:#17a2b8;text-decoration:none" @click="this.loadComments" class="btn btn-link btn-sm" :disabled="this.loadingComments">
                 <span
                     v-show="this.loadingComments && this.showComments"
                     class="spinner-border spinner-border-sm"
                 ></span>
                 <span v-if="!this.loadingComments && this.showComments && !this.lastPage">Load more comments...</span>
                 <span v-if="!this.loadingComments && !this.showComments && this.commentsList.length == 0">Load comments...</span>
-            </Button>
+            </button>
         </div>
         <div style="text-align:center">
-            <Button v-if="!this.showComments && this.commentsList.length > 0"
+            <button v-if="!this.showComments && this.commentsList.length > 0"
                 style="color:grey" @click="this.toggleComments" class="btn btn-link btn-sm">
                 <span >Show comments</span>
-            </Button>
+            </button>
         </div>
         <div v-if="showComments && this.commentsList.length > 0" style="text-align:center">
-            <Button style="color:grey" @click="this.toggleComments" class="btn btn-link btn-sm">
+            <button style="color:grey" @click="this.toggleComments" class="btn btn-link btn-sm">
                 <span>Hide comments</span>
-            </Button>
+            </button>
         </div>
 </template>
 

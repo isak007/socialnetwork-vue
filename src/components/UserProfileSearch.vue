@@ -39,10 +39,10 @@
 
                 <template #popper>
                     <div v-if="this.friendRequest==''" style="padding:10px;cursor:pointer">
-                        <Button @click="this.sendFriendRequest" class="btn btn-outline-success btn-sm" :disabled="this.loading"> Send friend request </Button>
+                        <button @click="this.sendFriendRequest" class="btn btn-outline-success btn-sm" :disabled="this.loading"> Send friend request </button>
                     </div>
                     <div v-else style="padding:10px;cursor:pointer">
-                        <Button @click="this.removeFriend" class="btn btn-outline-danger btn-sm" :disabled="this.loading"> Remove friend </Button>
+                        <button @click="this.removeFriend" class="btn btn-outline-danger btn-sm" :disabled="this.loading"> Remove friend </button>
                     </div>
                 </template>
 

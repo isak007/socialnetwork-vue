@@ -20,13 +20,13 @@
                     @crop-success="cropSuccess"
                     @srcFileSet="this.onPictureChange"
                     v-model="show"
-                    noSquare=true
+                    :noSquare="true"
                     :width="300"
                     :height="300"
                     langType='en'
                     img-format="png,jpg,jpeg,img">
             </my-upload>
-            <div v-if="editable&&this.displayPictureObject"><Button style="color:black" @click="this.removeImage" class="btn btn-link btn-sm">Remove</Button></div>
+            <div v-if="editable&&this.displayPictureObject"><button style="color:black" @click="this.removeImage" class="btn btn-link btn-sm">Remove</button></div>
             <button style="border: 1px solid gray; border-radius:2px" @click="toggleShow" v-if="editable">Change profile picture</button>
 
             <div style="word-break: break-word;max-width:350px">
@@ -56,7 +56,7 @@
       </div>
 
       <div v-if="!this.editable" style="float:left; width:fit-content; margin-right:20px">
-        <Form @submit="handleRegister" :validation-schema="schema">
+        <Form :validation-schema="schema">
             <div style="color:grey">
                 <div style="float:left;margin-right:50px">
                     <div class="form-group">
@@ -97,7 +97,7 @@
                 </div>
             </div>
             <div class="form-group" style="float:left;width:100%">
-                <Button class="btn btn-info" @click.prevent="this.changeEditable">Edit personal information</Button>
+                <button class="btn btn-info" @click.prevent="this.changeEditable">Edit personal information</button>
             </div>
             
         </Form>
@@ -116,7 +116,7 @@
                     <div class="form-group">
                         <label for="email">Email</label>
 
-                        <Field validateOnInput=true name="email" type="email" v-slot="{ field, errorMessage }" :value="this.user.email">
+                        <Field :validateOnInput="true" name="email" type="email" v-slot="{ field, errorMessage }" :value="this.user.email">
                             <input :disabled="this.codeSent || this.sendingCode" v-bind="field" class="form-control" autocomplete="off"
                             @keyup="this.emailHandler(field.value, errorMessage)" />
                             <span class="error-feedback" v-if="errorMessage"> {{ errorMessage }} </span>
@@ -125,14 +125,14 @@
                         <div v-if="this.newEmailValid && !this.codeSent">
 
                             <div class="form-group">
-                                <Button @click.prevent="this.sendCode" class="btn btn-link btn-sm" :disabled="this.sendingCode">
+                                <button @click.prevent="this.sendCode" class="btn btn-link btn-sm" :disabled="this.sendingCode">
                                     <span
                                         v-show="this.sendingCode"
                                         class="spinner-border spinner-border-sm"
                                     ></span>
                                     <span v-if="!this.sendingCode">Send code to verify</span>
                                     <span v-else>Sending code...</span>
-                                </Button>
+                                </button>
                                 <div name="emailVerificationCode" class="error-feedback">{{ this.emailCodeErr }}</div>
                             </div>
                         </div>
@@ -188,10 +188,8 @@
                                 :defaultItem="this.user.city"
                                 :items="this.cityList"
                                 :minInputLength="2"
-                                :itemProjection="itemProjectionFunction"
                                 @selectItem="(event) => {field.value = event; updateCity(event)}"
                                 @onInput="(event) => updateCityList(event)"
-                                @onFocus="onFocusEventHandler"
                                 @onBlur="(event) => onBlurCityHandler(event)">
                                 <template #list-item-text="slot">
                                     <div v-if="!this.loadingCities">
@@ -199,12 +197,12 @@
                                         <span v-html="slot.boldMatchText(slot.itemProjection(slot.item))"></span>
                                     </div>
                                     <div v-else style="text-align:center">
-                                        <Button style="color:#17a2b8;text-decoration:none" class="btn btn-link btn-sm" :disabled="this.loadingCities">
+                                        <button style="color:#17a2b8;text-decoration:none" class="btn btn-link btn-sm" :disabled="this.loadingCities">
                                             <span
                                                 v-show="this.loadingCities"
                                                 class="spinner-border spinner-border-sm"
                                             ></span>
-                                        </Button>
+                                        </button>
                                     </div>
                                 </template>
                             </vue3-simple-typeahead>
@@ -269,7 +267,7 @@
                     ></span>
                     Confirm
                 </button>
-                <Button class="btn btn-outline-secondary" @click.prevent="this.changeEditable">Cancel</Button>
+                <button class="btn btn-outline-secondary" @click.prevent="this.changeEditable">Cancel</button>
             </div>
         </Form>
       </div>
@@ -499,7 +497,6 @@ import PostsList from './PostsList.vue';
                                 result.address.countryCode)
                         }
                         this.loadingCities = false;
-
                     },
                     (error) => {
                         console.log(error);
@@ -511,8 +508,6 @@ import PostsList from './PostsList.vue';
                 this.show = !this.show;
             },
             cropSuccess(imgDataUrl, field){
-				console.log('-------- picture cropped and saved --------');
-
                 const convertBase64ToBlob = (base64Image) => {
                     const parts = base64Image.split(';base64,');
                     const imageType = parts[0].split(':')[1];

@@ -8,14 +8,14 @@
                     </div>
                     <div style="text-align:center;">
                         <div v-if="!lastPageNotifications" style="text-align:center;margin-bottom:10px;margin-top:5px;">
-                            <Button style="color:#17a2b8;text-decoration:none" @click.prevent="this.fetchNotifications" class="btn btn-link btn-sm"
+                            <button style="color:#17a2b8;text-decoration:none" @click.prevent="this.fetchNotifications" class="btn btn-link btn-sm"
                              :disabled="this.loadingNotifications">
                                 <span
                                     v-show="this.loadingNotifications"
                                     class="spinner-border spinner-border-sm"
                                 ></span>
                                 <span v-if="!this.loadingNotifications">Load more...</span>
-                            </Button>
+                            </button>
                         </div>
                     </div>
             </div>
@@ -108,7 +108,6 @@ export default {
                 var friendRequestWithData = this.$root.$data.friendRequestsWithData[requestInd];
                 if (friendRequestWithData.friendRequestDTO.id == friendRequestChanged.id){
                     this.$root.$data.friendRequestsWithData[requestInd].friendRequestDTO = friendRequestChanged;
-                    // this.friendRequestsWithData.splice(requestInd,1);
                     break;
                 }
             }

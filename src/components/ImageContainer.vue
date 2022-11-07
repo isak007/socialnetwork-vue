@@ -12,7 +12,7 @@
       name: "UserProfileSticker",
       props: {
         usersRaw:Object,
-        userSearchFormat:Object
+        userSearchFormat:String,
       },
       data() {
         return {
@@ -29,8 +29,6 @@
             for (let index in this.usersRaw){
                 let userRaw = this.usersRaw[index];
                 let username = user.split(" | ")[1];
-                console.log(username);
-                console.log(userRaw.username);
                 if (username == userRaw.username){
                     this.fetchProfilePicture(userRaw.id);
                 }
@@ -41,7 +39,6 @@
             (data) => {
                 const imageBlob = new Blob([data.data])
                 const imageObjectURL = URL.createObjectURL(imageBlob);
-                console.log(imageObjectURL);
                 this.imageContainer = imageObjectURL;
             },
             (error) => {

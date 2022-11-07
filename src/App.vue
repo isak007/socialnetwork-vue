@@ -15,13 +15,7 @@
         </li>
         <div>
             <VMenu v-if="this.showFriendRequests" :triggers="['click']" :hideTriggers="['click']" :autoHide="true">
-                <!-- <button @click="this.likesClicked" v-if="this.totalLikes == 1" style="color:grey;text-decoration:none" class="btn btn-link btn-sm">
-                    {{this.totalLikes}} like
-                </button>
-                <button @click="this.likesClicked" v-else-if="this.totalLikes > 1" style="color:grey;text-decoration:none" class="btn btn-link btn-sm">
-                    {{this.totalLikes}} likes
-                </button> -->
-                <li class="nav-item friendRequestsLink"> <!-- @click="this.fetchFriendRequests" -->
+                <li class="nav-item friendRequestsLink">
                     <div class="nav-link friendRequestsLink1" id="">
                         <img id="friendRequestsImg" src="./assets/add-user-23.png" style="min-height:25px;min-width:25px">
                     </div>
@@ -31,9 +25,9 @@
                 <template #popper>
                     <div style="display:inline-block">
                         <h5 style="margin-top:10px;margin-left:15px;float:left">Incoming requests ({{this.totalPendingFriendRequests}})</h5>
-                        <Button v-if="!this.loadingFriendRequests" style="float:left;color:#17a2b8;text-decoration:none;margin-top:8px;margin-left:120px;margin-right:10px" @click="this.goToFriendRequestsPage" class="btn btn-link btn-sm" :disabled="this.loadingFriendRequests">
+                        <button v-if="!this.loadingFriendRequests" style="float:left;color:#17a2b8;text-decoration:none;margin-top:8px;margin-left:120px;margin-right:10px" @click="this.goToFriendRequestsPage" class="btn btn-link btn-sm" :disabled="this.loadingFriendRequests">
                             <span>View all...</span>
-                        </Button>
+                        </button>
                     </div>
                     <perfect-scrollbar @mouseenter="this.disableScrollable"  @mouseleave="this.enableScrollable"
                     @ps-y-reach-end="this.scrollEndHandleFr" @ps-scroll-up="this.scrollUpHandleFr" style="max-height:600px">
@@ -51,7 +45,7 @@
                 </template>
             </VMenu>
             <div v-else>
-                <li class="nav-item" id="friendRequestsLink" > <!-- @click="this.fetchFriendRequests" -->
+                <li class="nav-item" id="friendRequestsLink" >
                     <div class="nav-link" id="friendRequestsLink1">
                         <img id="friendRequestsImg" src="./assets/add-user-23.png" style="min-height:25px;min-width:25px">
                     </div>
@@ -60,8 +54,8 @@
         </div>
 
         <div>
-            <VMenu :triggers="['click']" :hideTriggers="['click']" :autoHide="true" @click="this.setSeenNotifications">
-                <li class="nav-item friendRequestsLink" id="" > <!-- @click="this.fetchFriendRequests" -->
+            <VMenu :triggers="['click']" :hideTriggers="['click']" :autoHide="true">
+                <li class="nav-item friendRequestsLink" id="" >
                     <div class="nav-link friendRequestsLink1" id="">
                         <img v-if="this.hasNewNotifications" id="friendRequestsImg" src="./assets/notification-25-new.png" style="min-height:25px;min-width:25px">
                         <img v-else id="friendRequestsImg" src="./assets/notification-25.png" style="min-height:25px;min-width:25px">
@@ -70,10 +64,10 @@
                 <template #popper>
                     <div style="display:inline-block;width:100%;box-shadow: rgba(33, 35, 38, 0.1) 0px 10px 10px -10px">
                         <h5 style="margin-top:10px;margin-left:15px;float:left">Earlier</h5>
-                        <Button v-if="!this.loadingFriendRequests" style="float:right;color:#17a2b8;text-decoration:none;margin-top:8px;margin-right:10px" 
+                        <button v-if="!this.loadingFriendRequests" style="float:right;color:#17a2b8;text-decoration:none;margin-top:8px;margin-right:10px" 
                         @click="this.goToNotificationsPage" class="btn btn-link btn-sm">
                             <span>View all...</span>
-                        </Button>
+                        </button>
                     </div>
                     <perfect-scrollbar @mouseenter="this.disableScrollable"  @mouseleave="this.enableScrollable"
                     @ps-y-reach-end="this.scrollEndHandleNotifications" @ps-scroll-up="this.scrollUpHandleNotifications" style="max-height:520px">
@@ -87,7 +81,6 @@
                             <div>No notifications</div>
                         </div>
                     </perfect-scrollbar>
-                    <!-- <div>&nbsp;</div> -->
                 </template>
             </VMenu>
         </div>
@@ -115,44 +108,33 @@
             :value="this.searchInput"
             :items="this.userList"
             :minInputLength="3"
-            :itemProjection="itemProjectionFunction"
             :selectOnTab=false
             @keyup.enter="onSearch"
             @selectItem="(event) => selectUser(event)"
-            @onInput="(event) => updateUserList(event)"
-            @onFocus="onFocusEventHandler"
-            @onBlur="(event) => onBlurInputHandler(event)">
+            @onInput="(event) => updateUserList(event)">
             <template #list-item-text="slot">
                 <div v-if="!this.loadingUsers" style="overflow:hidden">
                     <span style="margin-right:20px;float:left">
-                        <!-- <img v-if="!this.hasImage(slot.item)"
-                            style="width:35px;height:35px;border-radius:50%"
-                            id="profile-img"
-                            src="//ssl.gstatic.com/accounts/ui/avatar_2x.png"
-                            class="profile-img-card"/>
-                        <img v-else :src="imageContainer" style="width:35px;height:35px;border-radius:50%"> -->
                         <ImageContainer :userSearchFormat="slot.item" :usersRaw="this.usersRaw"></ImageContainer>
                     </span>&nbsp;
                     <span style="float:left">
                         <div>{{slot.item.split(" | ")[0]}}</div>
                         <div style="color:grey">@{{slot.item.split(" | ")[1]}}</div>
                     </span>
-                    <!-- <span><img src="./assets/location_tag.png"></span>&nbsp; -->
-                    <!-- <span v-html="slot.boldMatchText(slot.itemProjection(slot.item))"></span> -->
                 </div>
                 <div v-else style="text-align:center">
-                    <Button style="color:#17a2b8;text-decoration:none" class="btn btn-link btn-sm" :disabled="this.loadingUsers">
+                    <button style="color:#17a2b8;text-decoration:none" class="btn btn-link btn-sm" :disabled="this.loadingUsers">
                         <span
                             v-show="this.loadingUsers"
                             class="spinner-border spinner-border-sm"
                         ></span>
-                    </Button>
+                    </button>
                 </div>
             </template>
         </vue3-simple-typeahead>
-        <Button class="btn btn-outlin-info btn-sm" @click="this.onSearch" style="margin-left:5px;color:white;vertical-align:middle">
+        <button class="btn btn-outlin-info btn-sm" @click="this.onSearch" style="margin-left:5px;color:white;vertical-align:middle">
             <img src="./assets/search-icon-white-28.png">
-        </Button>
+        </button>
       </div>
 
       <div v-if="!currentUser" class="navbar-nav ml-auto">
@@ -184,9 +166,7 @@
     </nav>
 
     <div class="container" style="margin-top:59px">
-      <router-view v-if="currentUser"/>
-
-      <Login v-if="this.$route.path=='/login' && !currentUser"/>
+      <router-view/>
 
       <div v-if="this.currentUser && !this.loadingFriends">
         <sidebar-menu :menu="menu" :rtl="true" width="260px" style="margin-top:59px" :collapsed="false"/>
@@ -205,7 +185,7 @@
 </template>
 
 <script>
-import 'babel-polyfill'; // es6 shim
+import 'babel-polyfill';
 import ImageContainer from './components/ImageContainer.vue'
 import UserFriendRequest from './components/UserFriendRequest.vue'
 import { PerfectScrollbar } from 'vue3-perfect-scrollbar'
@@ -215,7 +195,6 @@ import UserChatOpen from './components/UserChatOpen.vue'
 import { shallowRef,  ref } from 'vue'
 import FriendsListChat from './components/FriendsListChat.vue'
 import Notification from './components/Notification.vue'
-import Login from './components/Login.vue'
 export default {
   components: {
     ImageContainer,
@@ -224,7 +203,6 @@ export default {
     SidebarMenu,
     UserChatOpen,
     Notification,
-    Login
   },
   computed: {
     currentUser() {
@@ -287,13 +265,6 @@ export default {
     goToNotificationsPage(){
         this.$router.push("/notifications");
     },
-    scrollDownHandleFriends(){
-        var obj = document.getElementById("sidebarMenu");
-        if( obj.scrollTop === (obj.scrollHeight - obj.offsetHeight))
-        {
-            console.log("radi sve");
-        }
-    },
     setInitial(){
         this.menu= [
           {
@@ -342,12 +313,10 @@ export default {
             var friendRequestWithData = this.friendRequestsWithData[requestInd];
             if (friendRequestWithData.friendRequestDTO.id == friendRequestChanged.id){
                 this.friendRequestsWithData[requestInd].friendRequestDTO = friendRequestChanged;
-                // this.friendRequestsWithData.splice(requestInd,1);
                 break;
             }
         }
         this.totalPendingFriendRequests -= 1;
-
         // add friend to chat after accepted request
         this.loadFriends();
 
@@ -375,8 +344,6 @@ export default {
                 }
             })
         }
-        // +this.$route.path.replace("/profile/",'')
-        // this.$root.$data.friendRequestsWithData = this.friendRequestsWithData;
     },
     setRefreshable(){
         this.timer = window.setInterval( () => {
@@ -400,10 +367,6 @@ export default {
         this.scrolledBottomNotifications = true;
     },
     disableScrollable(){
-        // dont disable if there is not enough friends in list for scrolling
-        // if (this.friendRequestsWithData.length <= 5){
-        //     return;
-        // }
         // Get the current page scroll position
         var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
         var scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
@@ -420,25 +383,12 @@ export default {
         for (let index in this.usersRaw){
             let userRaw = this.usersRaw[index];
             let username = user.split(" | ")[1];
-            console.log(username);
-            console.log(userRaw.username);
             if (username == userRaw.username){
                 this.fetchProfilePicture(userRaw.id);
                 return true;
             }
         }
         return false;
-    },
-    getImage(user){
-        for (let index in this.usersRaw){
-            let userRaw = this.usersRaw[index];
-            let username = user.split(" | ")[1];
-            console.log(username);
-            console.log(userRaw.username);
-            if (username == userRaw.username){
-                //this.fetchProfilePicture(userRaw.id);
-            }
-        }
     },
     onSearch(){
         if (this.searchInput.length < 3) return;
@@ -449,11 +399,7 @@ export default {
             (data) => {
                 const imageBlob = new Blob([data.data])
                 const imageObjectURL = URL.createObjectURL(imageBlob);
-                console.log(imageObjectURL);
                 this.imageContainer = imageObjectURL;
-                // URL.revokeObjectURL(this.imageBlob)
-                // this.currentPictureObject = imageObjectURL;
-                // this.displayPictureObject = imageObjectURL;
             },
             (error) => {
                 console.log(error);
@@ -461,15 +407,6 @@ export default {
             }
         );
     },
-
-    // setSeenNotifications(){
-    //     for (let ind in this.notifications){
-    //         if (!this.notifications[ind].seen){
-    //             this.updateNotification(this.notifications[ind]);
-    //         }
-    //     }
-    //     // this.hasNewNotifications = false;
-    // },
 
     onNotificationClick(notification){
         this.updateNotification(notification);
@@ -511,14 +448,11 @@ export default {
         this.$store.dispatch("notification/fetchNotifications", page).then(
             (data) => {
                 this.totalNotifications = data.totalNotifications;
-                // this.notifications = data.notifications;
                 for (let ind in data.notifications){
                     let returnedNotification = data.notifications[ind];
                     let exists = false;
                     for (let ind1 in this.notifications){
                         if (returnedNotification.id == this.notifications[ind1].id){
-                            // set to seen so ui is changed from NEW to seen
-                            // this.notifications[ind].seen = true;
                             exists = true;
                             break;
                         }
@@ -543,26 +477,11 @@ export default {
         this.searchInput = "";
         this.selectedUser = "";
         var username = event.split(" | ")[1];
-        console.log("Selected user");
-        console.log(username);
         if (this.$store.state.auth.user.username == username){
             this.$router.push("/my-profile");
         } else{
             this.$router.push("/profile/"+username);
         }
-    },
-    onBlurInputHandler(e){
-        // if (e.input == ""){
-        //     this.cityError = "";
-        //     this.selectedCity = "";
-        //     return;
-        // }
-        // else if (!this.cityList.includes(e.input)){
-        //     this.selectedCity = "";
-        //     this.cityError = "City is invalid."
-        //     return;
-        // }
-        // this.cityError="";
     },
     updateUserList(e){
         this.searchInput = e.input;
@@ -605,9 +524,6 @@ export default {
         );
     },
     fetchFriendRequests(){
-        // if user is not on friend-requests page(where fetching is needed to update the changes) 
-        // page and the friend requests have already been fetched, don't fetch again
-        // if (/*this.$route.name == "friend-requests" &&*/ type!="init") return;
         this.loadingFriendRequests = true;
         var page = 0;
         this.$store.dispatch("friendRequest/fetchFriendRequests", page).then(
@@ -623,27 +539,6 @@ export default {
                     this.lastPageFriendRequests = true;
                 }
                 this.loadingFriendRequests = false;
-
-                // this.totalNotifications = data.totalNotifications;
-                // // this.notifications = data.notifications;
-                // for (let ind in data.notifications){
-                //     let returnedNotification = data.notifications[ind];
-                //     let exists = false;
-                //     for (let ind1 in this.notifications){
-                //         if (returnedNotification.id == this.notifications[ind1].id){
-                //             exists = true;
-                //             break;
-                //         }
-                //     }
-                //     if (!exists) {
-                //         type=="update" ? this.notifications.unshift(returnedNotification) : this.notifications.push(returnedNotification);
-                //     }
-                // }
-                // if (this.totalNotifications == this.notifications.length){
-                //     this.lastPageNotifications = true;
-                // }
-
-                
             },
             (error) => {
                 this.loadingFriendRequests = false;
@@ -665,7 +560,6 @@ export default {
         }
     },
     onClickChat(user, lastChatLineNotification, editLastChatLine) {
-        console.log(user); // LOGS DATA FROM CHILD
         if (!this.openChatUsersList.includes(user)){
             this.editLastChatLine = editLastChatLine;
             this.openChatUsersList.push(user);
@@ -703,9 +597,7 @@ export default {
                         userChats:data.users,
                         friendsNumber:data.totalFriends,
                         clickChat:this.onClickChat,
-                        // updateRequest: () => ({ this.onUpdateRequest})
                     },
-                    // hidden: false
                     hiddenOnCollapse: true
                 }
             )
@@ -748,7 +640,6 @@ export default {
       this.lastPageFriendRequests=false;
       this.friendsList=[];
       this.menu= [];
-    //   this.pageFriends=0;
       this.totalFriends = 0;
       this.totalFriendRequests=0;
       this.totalPendingFriendRequests=0;
@@ -779,9 +670,7 @@ export default {
   div#typeahead_id_search_wrapper.simple-typeahead :focus{
     color: white!important;
     background-color: none!important;
-    /* border-color: #80bdff!important; */
     outline: 0;
-    /* box-shadow: 0 0 0 .2rem rgba(0,123,255,.25); */
   }
 
   div#typeahead_id_search_wrapper.simple-typeahead {
@@ -806,7 +695,6 @@ export default {
   .v-sidebar-menu.vsm_rtl {opacity:0.95}
 
   .navbar{
-    /* margin-right:65px; */
     height:59px
   }
 
@@ -817,13 +705,4 @@ export default {
   html,body {
     background-color: #e9ecef;
   }
-
-/* #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-} */
 </style>

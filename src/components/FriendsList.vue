@@ -6,8 +6,8 @@
             <h3 v-else>Friends ({{this.totalFriends}})</h3>
         </div>
         <div v-if="!this.loading" style="float:left;margin-bottom:10px">
-            <Button v-if="showFriends" @click="this.toggleShow" class="btn btn-info">Hide friends</Button>
-            <Button v-else-if="!showFriends && friendsList.length > 0" @click="this.toggleShow" class="btn btn-outline-info">Show friends</Button>
+            <button v-if="showFriends" @click="this.toggleShow" class="btn btn-info">Hide friends</button>
+            <button v-else-if="!showFriends && friendsList.length > 0" @click="this.toggleShow" class="btn btn-outline-info">Show friends</button>
         </div>
     </div>
 
@@ -27,13 +27,13 @@
         </perfect-scrollbar>
 
         <div v-if="!lastPage" style="text-align:center">
-            <Button style="color:#17a2b8;text-decoration:none" class="btn btn-link btn-sm" :disabled="this.loading">
+            <button style="color:#17a2b8;text-decoration:none" class="btn btn-link btn-sm" :disabled="this.loading">
                 <span
                     v-show="this.loading && this.showFriends"
                     class="spinner-border spinner-border-sm"
                 ></span>
                 &nbsp;
-            </Button>
+            </button>
         </div>
 
         <div v-if="this.friendsList.length > 14 && !this.scrolledBottom" style="text-align:center">
