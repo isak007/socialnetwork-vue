@@ -12,7 +12,8 @@
                     :src="this.displayPictureObject"/>
             </span>
             <span  style="float:left;margin-right:20px">
-                <div><router-link :to="'/profile/'+this.user.username" style="color:#17a2b8;text-decoration:none">{{this.user.firstName}}&nbsp;{{this.user.lastName}}</router-link></div>
+                <div v-if="this.$store.state.auth.user.userId != this.user.id"><router-link :to="'/profile/'+this.user.username" style="color:#17a2b8;text-decoration:none">{{this.user.firstName}}&nbsp;{{this.user.lastName}}</router-link></div>
+                <div v-else><router-link :to="'/my-profile'" style="color:#17a2b8;text-decoration:none">{{this.user.firstName}}&nbsp;{{this.user.lastName}}</router-link></div>
                 <div style="font-size:13px;color:grey">@{{this.user.username}}</div>
             </span>
             <div v-if="this.user.id ==  this.$store.state.auth.user.userId && !editable" style="float:left">

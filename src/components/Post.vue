@@ -2,7 +2,7 @@
     <div v-if="!deleted && this.$store.state.auth.user" id="post">
         <div style="float:left;width:100%;margin-bottom:15px">
             <div style="float:left">
-                <router-link :to="'/profile/'+this.user.username">
+                <router-link v-if="this.$store.state.auth.user.userId != this.user.id" :to="'/profile/'+this.user.username">
                     <img v-if="!this.displayProfilePictureObject"
                         style="width:50px;height:50px;border-radius:50%;margin-right:10px"
                         id="profile-img"
@@ -12,7 +12,17 @@
                         style="width:50px;height:50px;border-radius:50%;margin-right:10px;box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;"
                         :src="this.displayProfilePictureObject"/>
                 </router-link>
-                <router-link v-if='this.$store.state.auth.user.userId != this.user.id' :to="'/profile/'+this.user.username" style="color:#17a2b8;text-decoration:none">
+                <router-link v-else :to="'/my-profile'">
+                    <img v-if="!this.displayProfilePictureObject"
+                        style="width:50px;height:50px;border-radius:50%;margin-right:10px"
+                        id="profile-img"
+                        src="//ssl.gstatic.com/accounts/ui/avatar_2x.png"
+                        class="profile-img-card"/>
+                    <img v-else
+                        style="width:50px;height:50px;border-radius:50%;margin-right:10px;box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;"
+                        :src="this.displayProfilePictureObject"/>
+                </router-link>
+                <router-link v-if="this.$store.state.auth.user.userId != this.user.id" :to="'/profile/'+this.user.username" style="color:#17a2b8;text-decoration:none">
                     {{this.user.username}}
                 </router-link>
                 <router-link v-else :to="'/my-profile'" style="color:grey;text-decoration:none">{{this.user.username}}</router-link>

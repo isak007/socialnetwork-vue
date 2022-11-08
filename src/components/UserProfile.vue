@@ -202,6 +202,7 @@ import { ref } from 'vue';
             }
         },
         created(){
+            if (this.$store.state.auth.user.username == this.username) this.$router.push("/my-profile");
             this.getUserData(this.username);
             this.$watch(
                 () => this.$route.params,
