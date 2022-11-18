@@ -46,7 +46,7 @@
                         </div>
 
                         <template #popper>
-                            <div v-if="this.friendRequest==''" style="padding:10px;cursor:pointer">
+                            <div v-if="this.friendRequest.requestStatus==undefined" style="padding:10px;cursor:pointer">
                                 <button @click="this.sendFriendRequest" class="btn btn-outline-success btn-sm" :disabled="this.loading"> Send friend request </button>
                             </div>
                             <div v-else style="padding:10px;cursor:pointer">
